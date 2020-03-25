@@ -2,84 +2,111 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-class PDFLine extends React.Component {
-  onChange(event) {
-    var newState = this.props.state;
-    newState.value = event.target.value;
-    this.props.updateState(newState);
-  }
-  
-  render() {
-    return (
-      <textarea
-        placeholder="Start a new bullet..."
-        className="pdfline"
-        value={this.props.state.value}
-        onChange={event => this.onChange(event)}
-      >
-      </textarea>
-    );
-  }
+function Guide(props) {
+  return(
+    <div className="guide" style={props.style}></div>
+  );
 }
 
-class GraberToggle extends React.Component {
-  onClick() {
-    var newState = this.props.state;
-    newState.graberized = !newState.graberized;
+function TripleGuide(props) {
+  return(
+    <div>
+      <Guide style={props.guides[0]}/>
+      <Guide style={props.guides[1]}/>
+      <Guide style={props.guides[2]}/>
+    </div>
+  );
+}
 
-    if (newState.graberized) {
-      newState.value = newState.value.replace(/ /g, "\u2003");
-    } else {
-      newState.value = newState.value.replace(/[\u2003]/g, " ");
-    }
+function BulletArea(props) {
+  return (
+    <textarea
+      className="bullet-area"
+      value={props.value}
+      placeholder="Write your bullets here..."
+      rows="10"
+      onChange={event => props.onChange(event)}
+    ></textarea>
+  );
+}
 
-    this.props.updateState(newState);
-  }
-  
-  render() {
-    return(
-      <div>
-        <label className="toggle-label">
-          Apply Auto-Spacing:
-        </label>
-        <label className="graber-toggle">
-          <input
-            type="checkbox"
-            checked={this.props.state.graberized}
-            onClick={() => this.onClick()}
-          />
-          <span className="slider round"></span>
-        </label>
-      </div>
-    );
-  }
+function GuidedBulletArea(props) {
+  return (
+    <div className="guided-bullet-area">
+      <BulletArea
+        value={props.value}
+        onChange={event => props.onChange(event)}
+      />
+      <TripleGuide
+        guides={props.guides}
+      />
+    </div>
+  );
+}
+
+function Toggle(props) {
+  return(
+    <div>
+    <label className="toggle-label">{props.label}</label>
+      <label className="toggle">
+        <input
+          type="checkbox"
+          checked={props.checked}
+          onClick={() => props.onClick()}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
 }
 
 class BulletEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: null, //'- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds',
+      bullets: Array(1).fill(null), //'- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds',
       graberized: false,
+      guides: [{left: '600px'}, {left: '761px'}, {left: '800px'}],
     };
   }
 
-  updateState(newState) {
-    this.setState(newState);
+  handleBulletChange(event) {
+    var bullets = this.state.bullets;
+    bullets = event.target.value.split("\n");
+    this.setState({bullets: bullets});
   }
+
+  handleAutoSpace() {
+    var bullets = this.state.bullets;
+
+    bullets.forEach(function(bullet, index) {
+      if (!this.state.graberized) {
+        bullets[index] = bullet.replace(/ /g, "\u200A");
+      } else {
+        bullets[index] = bullet.replace(
+          /[\u2002\u2003\u2004\u2006\u2007\u2009\u200A]/g,
+          " "
+        );
+      }
+    }, this);
+    this.setState({bullets: bullets,
+                   graberized: !this.state.graberized
+                  });
+  }                    
 
   render() {
     return (
       <div>
-        <PDFLine
-          state={this.state}
-          updateState={newState => this.updateState(newState)}
+        <Toggle
+          label="Apply Auto-Spacing:"
+          checked={this.state.graberized}
+          onClick={() => this.handleAutoSpace()}
         />
         <br/>
-        <br/>
-        <GraberToggle
-          state={this.state}
-          updateState={newState => this.updateState(newState)}
+        <GuidedBulletArea
+          value={this.state.bullets.join("\n")}
+          guides={this.state.guides}
+          onChange={event => this.handleBulletChange(event)}
         />
       </div>
     );
