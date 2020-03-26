@@ -1,20 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
 function Guide(props) {
   return(
     <div className="guide" style={props.style}></div>
-  );
-}
-
-function TripleGuide(props) {
-  return(
-    <div>
-      <Guide style={props.guides[0]}/>
-      <Guide style={props.guides[1]}/>
-      <Guide style={props.guides[2]}/>
-    </div>
   );
 }
 
@@ -37,9 +27,24 @@ function GuidedBulletArea(props) {
         value={props.value}
         onChange={event => props.onChange(event)}
       />
-      <TripleGuide
-        guides={props.guides}
+      <Guide
+        style={props.guides[1]}
       />
+    </div>
+  );
+}
+
+function BulletTester(props) {
+  const ref = useRef(null);
+  
+  useEffect(() => {
+    const width = ref.current ? ref.current.offsetWidth : 0;
+    console.log('width', width);
+  });
+  
+  return (
+    <div ref={ref} className="bullet-tester">
+      {props.value}
     </div>
   );
 }
@@ -66,7 +71,8 @@ class BulletEditor extends React.Component {
     this.state = {
       bullets: Array(1).fill(null), //'- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds',
       graberized: false,
-      guides: [{left: '600px'}, {left: '761px'}, {left: '800px'}],
+      guides: [{left: '600px'}, {left: '763px'}, {left: '800px'}],
+      test_string: null,
     };
   }
 
@@ -92,7 +98,23 @@ class BulletEditor extends React.Component {
     this.setState({bullets: bullets,
                    graberized: !this.state.graberized
                   });
-  }                    
+  }
+
+  createBulletTesters() {
+    var testers = [];
+    var bullets = this.state.bullets;
+
+    bullets.forEach(function(bullet, index) {
+      testers.push(
+        <BulletTester
+          value={bullet}
+        />
+      );
+    });
+
+    return(testers);
+  }
+
 
   render() {
     return (
@@ -108,6 +130,7 @@ class BulletEditor extends React.Component {
           guides={this.state.guides}
           onChange={event => this.handleBulletChange(event)}
         />
+        {this.createBulletTesters()}
       </div>
     );
   }
