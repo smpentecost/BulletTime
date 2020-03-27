@@ -11,6 +11,7 @@
 }
 
 .bullet-tester {
+    visibility: hidden;
     font-family: Times New Roman;
     font-size: 16px;
     border: solid 1px;
@@ -40,6 +41,10 @@
     height: 20px;
     display: inline-block;
     vertical-align: top;
+}
+
+.toggle-div {
+    margin: 2px;
 }
 
  /* The switch - the box around the slider */
@@ -80,6 +85,10 @@
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
+}
+
+input {
+    margin: 0px;
 }
 
 input:checked + .slider {
