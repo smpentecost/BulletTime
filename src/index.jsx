@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
@@ -85,14 +85,14 @@ class BulletEditor extends React.Component {
 
 
 
-  autoSpace(bullet, index) {
+  graberSpace() {
     /*
-      The best way to do this is incrementally, checking length as we
-      go. That is because these spaces don't have specific whitespace
-      pixels associated with them. Instead their pixel spaces are
-      dynamic based on font style and size. So while it sucks that we
-      need to use a timeout delay, atleast it only happens when the
-      user toggles the spacing on.
+      The best way to do this is recursively, checking length as we
+      go. That is because these spaces don't have specific pixel
+      widths associated with them. Instead their widths are dynamic -
+      based on font style, size and the other characters around
+      them. So while it sucks that we need to use synchronous logic,
+      atleast it only happens when the user toggles the spacing on.
 
       The whitespace unicode available for use with an OPR:
       2006:approx-2px(smallest), 2009:approx-1px(small),
@@ -110,47 +110,46 @@ class BulletEditor extends React.Component {
       }
     };
 
-    let spaces = [];
-    let bulletArray = bullet.split("");
-    let difference = 762 - this.state.widths[index];
-    
-    let position = bulletArray.findIndex(isWhiteSpace);
-    while (position !== -1) {
-      spaces.push(position);
-      let subArrayPosition = bulletArray.slice(position + 1).findIndex(isWhiteSpace);
-      if (subArrayPosition > 0) {
-        position = subArrayPosition + position + 1;
-      } else {
-        position = subArrayPosition;
+    const makeLonger = (
+      spaces, spacesIndex, bullets, bulletArray, bulletIndex
+    ) => {
+      if (this.state.widths[bulletIndex] < 762) {
+        bulletArray[spaces[spacesIndex]] = "\u2004";
+        bullets[bulletIndex] = bulletArray.join('');
+        this.setState(
+          {bullets: bullets},
+          makeLonger(spaces, spacesIndex+1, bullets, bulletArray, bulletIndex)
+        );
       }
-    }
-    //console.log(spaces);
-    //console.log(bulletArray);
+    };
 
-    /*
-    if (difference > 0) {
-      let big_replacements = Math.floor(difference/2);
-      let biggest_replacements = big_replacements-spaces.length;
-      for (let i = 0; i < spaces.length; i++) {
-        if (i <= biggest_replacements) {
-          bulletArray[spaces[i]] = "\u2007";
-        } else if (i <= big_replacements) {
-          bulletArray[spaces[i]] = "\u2004";
-        }
-      }
-    } else {
-      let small_replacements = (Math.floor(difference/1)*-1) + 1;
-      let smallest_replacements = small_replacements-spaces.length;
-      for (let i = 0; i < spaces.length; i++) {
-        if (i <= smallest_replacements) {
-          bulletArray[spaces[i]] = "\u2006";
-        } else if (i <= small_replacements) {
-          bulletArray[spaces[i]] = "\u2009";
+    var bullets = this.state.bullets;
+
+    bullets.forEach((bullet, index) => {
+      let spaces = [];
+      let spacesIndex = 1;
+      let bulletArray = bullet.split("");
+      let lengthDelta = 762 - this.state.widths[index];
+
+      //Find all the white space character indexes
+      let position = bulletArray.findIndex(isWhiteSpace);
+      while (position !== -1) {
+        spaces.push(position);
+        let subArrayPosition = bulletArray.slice(position + 1).findIndex(isWhiteSpace);
+        if (subArrayPosition > 0) {
+          position = subArrayPosition + position + 1;
+        } else {
+          position = subArrayPosition;
         }
       }
 
-    }*/
-    
+      //Start adjusting spaces
+      if (lengthDelta > 0) {
+        makeLonger(
+          spaces, spacesIndex, bullets, bulletArray, index
+        );
+      }
+    });
   }
 
   handleBulletChange(event) {
@@ -160,21 +159,21 @@ class BulletEditor extends React.Component {
   }
 
   handleAutoSpace() {
-    var bullets = this.state.bullets;
-
-    bullets.forEach(function(bullet, index) {
-      if (!this.state.graberized) {
-        this.autoSpace(bullet, index);
-      } else {
+    //If not currently graberized, that means it should now be
+    //graberized
+    if (!this.state.graberized) {
+      this.graberSpace();
+    } else { //Remove graber spaces
+      var bullets = this.state.bullets;
+      bullets.forEach((bullet, index) => {
         bullets[index] = bullet.replace(
           /[\u2004\u2006\u2007\u2009]/g,
           ' '
         );
-      }
-    }, this);
-    this.setState({bullets: bullets,
-                   graberized: !this.state.graberized
-                  });
+      });
+      this.setState({bullets: bullets});
+    }
+    this.setState({graberized: !this.state.graberized});
   }
 
   handleWidthChange(index, width) {
