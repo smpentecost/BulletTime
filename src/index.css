@@ -19,7 +19,7 @@
     position: absolute;
     height: auto;
     width: auto;
-    white-sspace: nowrap;
+    white-space: pre;
 }
 
 #editor_title {

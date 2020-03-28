@@ -124,7 +124,7 @@ class BulletEditor extends React.Component {
     widths[index] = width;
     this.setState({widths: widths});
     if (this.state.graberized) {
-      if (width < 759 || width > 763) {
+      if (width < 760 || width > 763) {
         var bullets = this.state.bullets;
         bullets[index] = this.graberSpace(index, width);
         this.setState({bullets: bullets});
