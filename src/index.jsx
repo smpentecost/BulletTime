@@ -50,7 +50,7 @@ function BulletTester(props) {
   //Set the parent width any time the local state width changes
   useEffect(() => {
     props.handleWidthChange(props.index, width);
-  }, [width]);
+  }, [width, props.value]);
   
   return (
     <div ref={ref} className="bullet-tester">
@@ -104,6 +104,7 @@ class BulletEditor extends React.Component {
     bullets.forEach((bullet, index) => {
 
       if (!this.state.graberized) {
+        console.log('trigger width', this.state.widths[index]);
         bullets[index] = this.graberSpace(index, this.state.widths[index]);
       } else { //Remove graber spaces
         bullets[index] = bullet.replace(
@@ -123,7 +124,7 @@ class BulletEditor extends React.Component {
     widths[index] = width;
     this.setState({widths: widths});
     if (this.state.graberized) {
-      if (width < 760 || width > 761) {
+      if (width < 761 || width > 762) {
         var bullets = this.state.bullets;
         bullets[index] = this.graberSpace(index, width);
         this.setState({bullets: bullets});
@@ -148,7 +149,8 @@ class BulletEditor extends React.Component {
 
     const promote = (ranks) => {
       let newRanks = ranks;
-      var indexOfMinValue = ranks.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0);
+      // Intentionally slicing so that we don't change the first space
+      var indexOfMinValue = ranks.slice(1).reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
       newRanks[indexOfMinValue]++;
       if (newRanks[indexOfMinValue] > 4) {
         newRanks[indexOfMinValue] = 4;
@@ -158,8 +160,9 @@ class BulletEditor extends React.Component {
 
     const demote = (ranks) => {
       let newRanks = ranks;
-      var indexOfMaxValue = ranks.reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0);
-      newRanks[indexOfMaxValue] = newRanks[indexOfMaxValue] - 2;
+      // Intentionally slicing so that we don't change the first space
+      var indexOfMaxValue = ranks.slice(1).reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0) + 1;
+      newRanks[indexOfMaxValue]--;
       if (newRanks[indexOfMaxValue] < 0) {
         newRanks[indexOfMaxValue] = 0;
       }
@@ -199,14 +202,14 @@ class BulletEditor extends React.Component {
 
     if (width > 762) {
       ranks = demote(ranks);
-    } else {
+    } else if (width < 762) {
       ranks = promote(ranks);
     }
 
     console.log(ranks);
     console.log(width);
 
-    spaces.slice(1).forEach((position, index) => {
+    spaces.forEach((position, index) => {
       bulletArray[position] = rank[ranks[index]];
     });
 
