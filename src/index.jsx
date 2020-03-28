@@ -81,7 +81,7 @@ class BulletEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bullets: Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
+      bullets: [], //Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
       widths: [],
       graberized: false,
       guides: [{left: '600px'}, {left: '763px'}, {left: '800px'}],
@@ -235,12 +235,15 @@ class BulletEditor extends React.Component {
 
   render() {
     return (
-      <div>
-        <Toggle
-          label="Apply Graber Spacing:"
-          checked={this.state.graberized}
-          onClick={() => this.handleAutoSpace()}
-        />
+      <div >
+        <div id="editor_title">
+          Bullet Editor
+          <Toggle
+            label="Apply Graber Spacing:"
+            checked={this.state.graberized}
+            onClick={() => this.handleAutoSpace()}
+          />
+        </div>
         <GuidedBulletArea
           value={this.state.bullets.join("\n")}
           guides={this.state.guides}
@@ -269,4 +272,5 @@ class BulletTime extends React.Component {
 ReactDOM.render(
   <BulletTime />,
   document.getElementById('root')
+
 );
