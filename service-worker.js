@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/BulletTime/precache-manifest.17f9f715c59458e3aeecb5c69953e3c1.js"
+  "/BulletTime/precache-manifest.2fb27fc2ddff7e2084fe12de8b718606.js"
 );
 
 self.addEventListener('message', (event) => {
