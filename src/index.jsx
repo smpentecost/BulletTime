@@ -124,7 +124,7 @@ class BulletEditor extends React.Component {
     widths[index] = width;
     this.setState({widths: widths});
     if (this.state.graberized) {
-      if (width < 761 || width > 762) {
+      if (width < 759 || width > 763) {
         var bullets = this.state.bullets;
         bullets[index] = this.graberSpace(index, width);
         this.setState({bullets: bullets});
@@ -193,7 +193,7 @@ class BulletEditor extends React.Component {
       spaces.push(position);
       ranks.push(rank.findIndex(elem => elem === bulletArray[position]));
       let subArrayPosition = bulletArray.slice(position + 1).findIndex(isWhiteSpace);
-      if (subArrayPosition > 0) {
+      if (subArrayPosition !== -1) {
         position = subArrayPosition + position + 1;
       } else {
         position = subArrayPosition;
