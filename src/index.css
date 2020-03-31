@@ -7,12 +7,18 @@
     min-width: 763px;
     width: 100%;
     box-sizing: border-box;
+    overflow-wrap: normal;
+    white-space: pre;
     overflow-x: auto;
     text-size-adjust: 0.5;
 }
 
+.disabled {
+    background-color: #f2f2f2
+}
+
 .bullet-tester {
-    visibility: hidden;
+    visibility:hidden;
     font-family: Times New Roman;
     font-size: 16px;
     border: solid 1px;
@@ -28,6 +34,13 @@
     font-weight: bold;
     font-size: 16px;
     background-color: #fafafa;
+}
+
+.title-object {
+    display:flex;
+    height: 20px;
+    align-items: center;
+    float: right;
 }
 
 .guide {
@@ -52,10 +65,6 @@
     vertical-align: top;
 }
 
-.toggle-div {
-    margin-bottom: 2px;
-    float: right;
-}
 
  /* The switch - the box around the slider */
 .toggle {

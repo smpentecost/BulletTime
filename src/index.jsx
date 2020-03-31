@@ -1,11 +1,16 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
+import { IconButton } from '@material-ui/core';
+import { ArrowLeft, ArrowRight } from '@material-ui/icons';
 import './index.css';
 
 
 function Guide(props) {
   return(
-    <div className="guide" style={props.style}></div>
+    <div
+      className="guide"
+      style={{left: props.position+"px"}}
+    ></div>
   );
 }
 
@@ -13,11 +18,12 @@ function Guide(props) {
 function BulletArea(props) {
   return (
     <textarea
-      className="bullet-area"
-      value={props.value}
+      className={`bullet-area ${props.disabled ? "disabled" : ""}`}
+      value={props.bullets.join("\n")}
       placeholder="Write your bullets here..."
       rows="10"
       onChange={event => props.onChange(event)}
+      autofocus="true"
     ></textarea>
   );
 }
@@ -27,11 +33,12 @@ function GuidedBulletArea(props) {
   return (
     <div className="guided-bullet-area">
       <BulletArea
-        value={props.value}
+        bullets={props.bullets}
+        disabled={props.disabled}
         onChange={event => props.onChange(event)}
       />
       <Guide
-        style={props.guides[1]}
+        position={props.guide}
       />
     </div>
   );
@@ -60,9 +67,30 @@ function BulletTester(props) {
 }
 
 
+function Trim(props) {
+  return(
+    <div className="title-object">
+      <IconButton
+        disableRipple="true"
+      >
+        <ArrowLeft
+          onClick={() => props.onTrim("left")}
+        ></ArrowLeft>
+      </IconButton>
+      Trim
+      <IconButton>
+        <ArrowRight
+          onClick={() => props.onTrim("right")}
+        ></ArrowRight>
+      </IconButton>
+    </div>
+  );
+}
+
+
 function Toggle(props) {
   return(
-    <div className="toggle-div">
+    <div className="title-object">
     <label className="toggle-label">{props.label}</label>
       <label className="toggle">
         <input
@@ -84,7 +112,7 @@ class BulletEditor extends React.Component {
       bullets: [], //Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
       widths: [],
       graberized: false,
-      guides: [{left: '600px'}, {left: '763px'}, {left: '800px'}],
+      guide: 763,
     };
   }
 
@@ -120,16 +148,27 @@ class BulletEditor extends React.Component {
 }
 
   handleWidthChange(index, width) {
+    const guide = this.state.guide;
     let widths = this.state.widths;
     widths[index] = width;
     this.setState({widths: widths});
     if (this.state.graberized) {
-      if (width < 760 || width > 763) {
+      if (width < guide-3 || width > guide-1) {
         var bullets = this.state.bullets;
         bullets[index] = this.graberSpace(index, width);
         this.setState({bullets: bullets});
       }
     }
+  }
+
+  handleTrim(direction) {
+    let guide = this.state.guide;
+    if (direction === "left") {
+      guide--;
+    } else if (direction === "right") {
+      guide++;
+    }
+    this.setState({guide: guide});
   }
 
   graberSpace(index, width) {
@@ -181,6 +220,7 @@ class BulletEditor extends React.Component {
     };
 
     const rank = ['\u2006', '\u2009', ' ', '\u2004', '\u2007'];
+    const guide = this.state.guide;
     var bullet = this.state.bullets[index];
 
     let spaces = [];
@@ -200,9 +240,9 @@ class BulletEditor extends React.Component {
       }
     }
 
-    if (width > 762) {
+    if (width > guide-1) {
       ranks = demote(ranks);
-    } else if (width < 762) {
+    } else if (width < guide-1) {
       ranks = promote(ranks);
     }
 
@@ -243,10 +283,14 @@ class BulletEditor extends React.Component {
             checked={this.state.graberized}
             onClick={() => this.handleAutoSpace()}
           />
+          <Trim
+            onTrim={(direction) => this.handleTrim(direction)}
+          />
         </div>
         <GuidedBulletArea
-          value={this.state.bullets.join("\n")}
-          guides={this.state.guides}
+          bullets={this.state.bullets}
+          guide={this.state.guide}
+          disabled={this.state.graberized}
           onChange={event => this.handleBulletChange(event)}
         />
         {this.createBulletTesters()}
