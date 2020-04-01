@@ -30,7 +30,7 @@ export default function TemporaryDrawer(props) {
         <ListItem
           button
           component="a"
-          href="https://github.com/smpentecost/BulletTime"
+          href="https://github.com/smpentecost/BulletTime/tree/master"
           target="_blank"
         >
           <ListItemIcon><GitHubIcon /></ListItemIcon>

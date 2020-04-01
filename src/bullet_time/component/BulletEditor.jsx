@@ -13,6 +13,7 @@ export default class BulletEditor extends React.Component {
       widths: [],
       graberized: false,
       guide: 763,
+      trim: 0,
     };
   }
 
@@ -61,14 +62,8 @@ export default class BulletEditor extends React.Component {
     }
   }
 
-  handleTrim(direction) {
-    let guide = this.state.guide;
-    if (direction === "left") {
-      guide--;
-    } else if (direction === "right") {
-      guide++;
-    }
-    this.setState({guide: guide});
+  handleGuideChange(arg) {
+    this.setState({guide: 763 + arg});
   }
 
   graberSpace(index, width) {
@@ -188,7 +183,8 @@ export default class BulletEditor extends React.Component {
           <Grid item style={{minWidth: "200px"}}>
             <BulletMenu
               checked={this.state.graberized}
-              onChange={() => this.handleAutoSpace()}
+              onGraberize={() => this.handleAutoSpace()}
+              onTrim={(arg) => this.handleGuideChange(arg)}
             />
           </Grid>
         </Grid>

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, FormControlLabel, FormGroup, Paper, Switch } from '@material-ui/core';
+import { Container, Divider, FormControlLabel, FormGroup, Paper, Switch } from '@material-ui/core';
+import TrimController from './TrimController';
 
 export default function BulletMenu(props) {
 
@@ -11,10 +12,14 @@ export default function BulletMenu(props) {
             control={
               <Switch
                 checked={props.checked}
-                onChange={() => props.onChange()}
+                onChange={(direction) => props.onGraberize(direction)}
               />
             }
             label="Graberize"
+          />
+          <Divider/>
+          <TrimController
+            onTrim={(arg) => props.onTrim(arg)}
           />
         </FormGroup>
       </Container>
