@@ -180,7 +180,7 @@ export default class BulletEditor extends React.Component {
               onChange={event => this.handleBulletChange(event)}
             />
           </Grid>
-          <Grid item style={{minWidth: "200px"}}>
+          <Grid item>
             <BulletMenu
               checked={this.state.graberized}
               onGraberize={() => this.handleAutoSpace()}

@@ -1,28 +1,55 @@
 import React from 'react';
-import { Container, Divider, FormControlLabel, FormGroup, Paper, Switch } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { AppBar, Container, Divider, FormControlLabel, FormGroup, Grid, Paper, Switch, Toolbar, Typography } from '@material-ui/core';
 import TrimController from './TrimController';
 
-export default function BulletMenu(props) {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+  },
+  title: {
+    flexGrow: 1,
+  },
+}));
 
+
+export default function BulletMenu(props) {
+  const classes = useStyles();
+  
   return(
     <Paper elevation={6}>
-      <Container>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={props.checked}
-                onChange={(direction) => props.onGraberize(direction)}
-              />
-            }
-            label="Graberize"
-          />
-          <Divider/>
-          <TrimController
-            onTrim={(arg) => props.onTrim(arg)}
-          />
-        </FormGroup>
-      </Container>
+      <AppBar position="static">
+        <Toolbar variant="dense">
+          <Typography
+            variant="h6"
+            className={classes.title}
+          >
+            Spacing Menu
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Grid
+        container
+        direction="column"
+        align="center"
+      >
+        <Grid item>
+        <TrimController
+          onTrim={(arg) => props.onTrim(arg)}
+      />
+    </Grid>
+        <Divider/>
+        <Grid item>
+        <FormControlLabel
+          control=
+            {<Switch
+               checked={props.checked}
+               onChange={() => props.onGraberize()}
+             />}
+          label="Graberize"
+      />
+    </Grid>
+      </Grid>
     </Paper>
   );
 }
