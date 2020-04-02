@@ -28,18 +28,11 @@ export default function BulletMenu(props) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Grid
-        container
-        direction="column"
-        align="center"
-      >
-        <Grid item>
+      <Container>
         <TrimController
           onTrim={(arg) => props.onTrim(arg)}
       />
-    </Grid>
         <Divider/>
-        <Grid item>
         <FormControlLabel
           control=
             {<Switch
@@ -47,9 +40,8 @@ export default function BulletMenu(props) {
                onChange={() => props.onGraberize()}
              />}
           label="Graberize"
-      />
-    </Grid>
-      </Grid>
+        />
+          </Container>
     </Paper>
   );
 }

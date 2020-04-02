@@ -39,11 +39,9 @@ export default function Trim(props) {
   };
 
   return(
-    <Container>
     <Grid
       container
       alignItems="center"
-      justify="center"
       className={classes.root}
     >
       <Grid item>
@@ -84,6 +82,5 @@ export default function Trim(props) {
         </IconButton>
       </Grid>
     </Grid>
-    </Container>
   );
 }
