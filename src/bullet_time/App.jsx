@@ -34,7 +34,6 @@ export default class BulletTime extends React.Component {
             <BulletEditor />
           </Grid>
         </Grid>
-        <Acronyms/>
       </ThemeProvider>
     );
   }
