@@ -31,7 +31,6 @@ export default class BulletEditor extends React.Component {
 
     var bullets = this.state.bullets;
     bullets.forEach((bullet, index) => {
-
       if (!this.state.graberized) {
         console.log('trigger width', this.state.widths[index]);
         bullets[index] = this.graberSpace(index, this.state.widths[index]);
@@ -64,6 +63,15 @@ export default class BulletEditor extends React.Component {
 
   handleGuideChange(arg) {
     this.setState({guide: 763 + arg});
+
+    var bullets = this.state.bullets;
+    bullets.forEach((bullet, index) => {
+      if (this.state.graberized) {
+        console.log('trigger width', this.state.widths[index]);
+        bullets[index] = this.graberSpace(index, this.state.widths[index]);
+          }
+    }, this);
+  this.setState({bullets: bullets,});
   }
 
   graberSpace(index, width) {
