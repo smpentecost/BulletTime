@@ -4,9 +4,6 @@ import { AppBar, Container, Divider, FormControlLabel, FormGroup, Grid, Paper, S
 import TrimController from './TrimController';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    margin: theme.spacing(1),
-  },
   title: {
     flexGrow: 1,
   },
