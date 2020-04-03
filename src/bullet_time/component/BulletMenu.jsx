@@ -28,20 +28,28 @@ export default function BulletMenu(props) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Container>
-        <TrimController
-          onTrim={(arg) => props.onTrim(arg)}
-      />
-        <Divider/>
-        <FormControlLabel
-          control=
-            {<Switch
-               checked={props.checked}
-               onChange={() => props.onGraberize()}
-             />}
-          label="Graberize"
-        />
-          </Container>
+      <Grid
+        container
+        direction="column"
+        alignItems="center"
+      >
+        <Grid item>
+          <TrimController
+            onTrim={(arg) => props.onTrim(arg)}
+          />
+          <Divider/>
+        </Grid>
+        <Grid item>
+          <FormControlLabel
+            control=
+              {<Switch
+                 checked={props.checked}
+                 onChange={() => props.onGraberize()}
+               />}
+            label="Graberize"
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 }
