@@ -32,8 +32,9 @@ export default class BulletEditor extends React.Component {
     var bullets = this.state.bullets;
     bullets.forEach((bullet, index) => {
       if (!this.state.graberized) {
+        const guide = this.state.guide;
         console.log('trigger width', this.state.widths[index]);
-        bullets[index] = this.graberSpace(index, this.state.widths[index]);
+        bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
       } else { //Remove graber spaces
         bullets[index] = bullet.replace(
           /[\u2004\u2006\u2007\u2009]/g,
@@ -55,26 +56,27 @@ export default class BulletEditor extends React.Component {
     if (this.state.graberized) {
       if (width < guide-6 || width > guide-1) {
         var bullets = this.state.bullets;
-        bullets[index] = this.graberSpace(index, width);
+        bullets[index] = this.graberSpace(index, width, guide);
         this.setState({bullets: bullets});
       }
     }
   }
 
   handleGuideChange(arg) {
-    this.setState({guide: 763 + arg});
+    const guide = 763+arg;
+    this.setState({guide: guide});
 
     var bullets = this.state.bullets;
     bullets.forEach((bullet, index) => {
       if (this.state.graberized) {
         console.log('trigger width', this.state.widths[index]);
-        bullets[index] = this.graberSpace(index, this.state.widths[index]);
-          }
+        bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
+      }
     }, this);
-  this.setState({bullets: bullets,});
+    this.setState({bullets: bullets,});
   }
 
-  graberSpace(index, width) {
+  graberSpace(index, width, guide) {
     /*
       The best way to do this is recursively, changing a single
       character at once and checking length as we go. That is because
@@ -123,7 +125,6 @@ export default class BulletEditor extends React.Component {
     };
 
     const rank = ['\u2006', '\u2009', ' ', '\u2004', '\u2007'];
-    const guide = this.state.guide;
     var bullet = this.state.bullets[index];
 
     let spaces = [];
