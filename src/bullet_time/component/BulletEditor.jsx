@@ -1,8 +1,8 @@
 import React from 'react';
 import { Grid, Paper, FormGroup, Switch, FormControlLabel } from '@material-ui/core';
+import BulletMenu from './BulletMenu';
 import BulletTester from './BulletTester';
 import GuidedBulletArea from './GuidedBulletArea';
-import BulletMenu from './BulletMenu';
 import '../style/BulletEditor.css';
 
 export default class BulletEditor extends React.Component {

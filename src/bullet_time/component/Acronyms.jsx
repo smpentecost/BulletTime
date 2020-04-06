@@ -1,6 +1,7 @@
 import React from "react";
 import initSqlJs from "sql.js";
 import AcronymList from '../data/acronyms.db';
+import test from './test.txt';
 
 
 export default class Acronyms extends React.Component {
@@ -11,12 +12,50 @@ export default class Acronyms extends React.Component {
   }
 
   componentDidMount() {
-    // sql.js needs to fetch its wasm file, so we cannot immediately instantiate the database
-    // without any configuration, initSqlJs will fetch the wasm files directly from the same path as the js
+    // sql.js needs to fetch its wasm file, so we cannot immediately
+    // instantiate the database without any configuration, initSqlJs
+    // will fetch the wasm files directly from the same path as the js
     // see ../config-overrides.js
-    initSqlJs()
-      .then(SQL => this.setState({ db: new SQL.Database(AcronymList) }))
-      .catch(err => this.setState({ err }));
+
+    // initSqlJs({
+    // }).then(SQL => {
+    //   fetch(test).then(function(response) {
+    //     return response.blob();
+    //   }).then(function(data) {
+    //     var reader = new FileReader();
+    //     reader.onload = (function(e) {
+    //       console.log(e.target.result);
+    //     });
+    //     reader.readAsText(data);
+    //   });
+    // var db;
+    // initSqlJs({
+    // }).then(SQL => {
+    //   fetch(AcronymList).then(function(response) {
+    //     return response.arrayBuffer();
+    //   }).then(function(data) {
+    //     //        var reader = new FileReader();
+    //     //      reader.onload = function() {
+    //     console.log(data);
+    //     var Uints = new Uint8Array(data);
+    //     console.log(Uints);
+    //     db = new SQL.Database(Uints);
+    //   });
+
+    //   this.setState({ db: db });
+    // });
+    //      .catch(err => this.setState({ err }));
+
+    var xhr = new XMLHttpRequest();
+    // For example: https://github.com/lerocha/chinook-database/raw/master/ChinookDatabase/DataSources/Chinook_Sqlite.sqlite
+    xhr.open('GET', AcronymList , true);
+    xhr.responseType = 'arraybuffer';
+    
+    xhr.onload = e => {
+      var uInt8Array = new Uint8Array(xhr.response);
+      var db = new SQL.Database(uInt8Array);
+    };
+    xhr.send();
   }
 
   exec(sql) {
