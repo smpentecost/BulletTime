@@ -1,7 +1,6 @@
 import React from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
-import Acronyms from './component/Acronyms';
 import AppBar from './component/AppBar';
 import BulletEditor from './component/BulletEditor';
 
@@ -34,7 +33,6 @@ export default class BulletTime extends React.Component {
             <BulletEditor />
           </Grid>
         </Grid>
-        <Acronyms/>
       </ThemeProvider>
     );
   }
