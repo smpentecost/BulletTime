@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEffect, useRef, useState } from 'react';
+import '../style/BulletTester.css';
 
 
 export default function BulletTester(props) {

@@ -1,4 +1,5 @@
 import React from 'react';
+import '../style/Guide.css';
 
 export default function Guide(props) {
   return(

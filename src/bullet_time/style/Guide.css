@@ -1,0 +1,9 @@
+.guide {
+    border: none;
+    border-right: dashed 1px grey;
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 0px;
+    box-sizing: border-box;
+}

@@ -3,7 +3,6 @@ import { Grid, Paper, FormGroup, Switch, FormControlLabel } from '@material-ui/c
 import BulletMenu from './BulletMenu';
 import BulletTester from './BulletTester';
 import GuidedBulletArea from './GuidedBulletArea';
-import '../style/BulletEditor.css';
 
 export default class BulletEditor extends React.Component {
   constructor(props) {

@@ -1,21 +1,14 @@
 import React from 'react';
+import '../style/HighlightedTextarea.css';
 
 export default class HighlightedTextarea extends React.Component {
 
-  static OPEN_MARK = '<mark>';
-  static CLOSE_MARK = '</mark>';
+  static OPEN_MARK = '<span class=acronym>';
+  static CLOSE_MARK = '</span>';
 
   constructor(props) {
     super(props);
-    this.state = {
-      input: props.value,
-    };
-    this.handleInputChange = this.handleInputChange.bind(this);
     this.handleScroll = this.handleScroll.bind(this);
-  }
-
-  handleInputChange(event) {
-    this.setState({input: event.target.value});
   }
 
   handleScroll(event) {
@@ -54,7 +47,7 @@ export default class HighlightedTextarea extends React.Component {
   }
 
   getHighlights() {
-    let highlightMarks = this.state.input;
+    let highlightMarks = this.props.value;
     const payload = this.props.highlight(highlightMarks);
 
     // escape HTML
@@ -94,10 +87,15 @@ export default class HighlightedTextarea extends React.Component {
           />
         </div>
         <textarea
-          className="hwt-input hwt-content"
-          onChange={this.handleInputChange}
+          className={
+            `hwt-input hwt-content ${this.props.disabled ? "disabled" : ""}`
+          }
+          onChange={event => this.props.onChange(event)}
           onScroll={this.handleScroll}
-          value={this.state.input}
+          value={this.props.value}
+          placeholder="Write your bullets here..."
+          rows="20"
+          autofocus="true"
         />
       </div>
     );

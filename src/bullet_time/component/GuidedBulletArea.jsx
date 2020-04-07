@@ -2,6 +2,7 @@ import React from 'react';
 import Guide from './Guide';
 import BulletArea from './BulletArea';
 import { Paper } from '@material-ui/core';
+import '../style/GuidedBulletArea.css';
 
 export default function GuidedBulletArea(props) {
   return (
