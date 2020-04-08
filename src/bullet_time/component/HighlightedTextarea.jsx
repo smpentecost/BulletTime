@@ -3,7 +3,7 @@ import '../style/HighlightedTextarea.css';
 
 export default class HighlightedTextarea extends React.Component {
 
-  static OPEN_MARK = '<span class=acronym>';
+  static OPEN_MARK = '<span class=acronym onClick="alert()">';
   static CLOSE_MARK = '</span>';
 
   constructor(props) {

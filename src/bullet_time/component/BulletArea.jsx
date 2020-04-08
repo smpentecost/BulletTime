@@ -34,9 +34,7 @@ export default class BulletArea extends React.Component {
   }
 
   highlight(input) {
-    let { db, err, results } = this.state;
-    if (!db) return [];
-    let words = input.split(" "); // Come back to this and include everything that isn't alphaneumeric or specifically allowed symbols
+    let words = new Set(input.split(" ")); // Come back to this and include everything that isn't alphaneumeric or specifically allowed symbols
     let marks = [];
     words.forEach((word) => {
       let result = this.state.db.exec("SELECT * FROM words WHERE word LIKE :str ;", {':str':word});
