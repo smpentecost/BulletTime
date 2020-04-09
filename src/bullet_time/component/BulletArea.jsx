@@ -9,7 +9,7 @@ export default class BulletArea extends React.Component {
   
   constructor(props){
     super(props);
-    this.state = { db: null, err: null, results: null };
+    this.state = { db: null, err: null, regexp: null};
   }
 
   componentDidMount() {
@@ -26,38 +26,37 @@ export default class BulletArea extends React.Component {
         xhr.onload = e => {
           var uInt8Array = new Uint8Array(xhr.response);
           var db = new SQL.Database(uInt8Array);
-          this.setState({ db: db });
+          this.setState({ db: db }, this.getRegExp);
         };
         xhr.send();
       })
       .catch(err => this.setState({ err }));
   }
 
-  highlight(input) {
-    let words = new Set(input.split(" ")); // Come back to this and include everything that isn't alphaneumeric or specifically allowed symbols
-    let marks = [];
-    words.forEach((word) => {
-      let result = this.state.db.exec("SELECT * FROM words WHERE word LIKE :str ;", {':str':word});
-      if (result.length > 0) {
-        const start = input.indexOf(word);
-        const end = start + word.length;
-        const location = new Array(start, end);
-        marks.push(location);
+  getRegExp() {
+    let regexp_def = "";
+    let result = this.state.db.exec("SELECT word FROM words;")[0].values;
+    result = result.sort((a, b) => {return b[0].length-a[0].length;});
+    result.forEach((item) => {
+      if (regexp_def.length) {
+        regexp_def = regexp_def + "|\\b" + item[0] + "\\b";
+      } else {
+        regexp_def = regexp_def + "\\b" + item[0] + "\\b";
       }
-    }, this);
-    return marks;
+    });
+    this.setState({regexp: new RegExp(regexp_def, "gi")});
   }
   
   render() {
     let { db, err, results } = this.state;
     if (!db) return <pre>Loading...</pre>;
     return(
-    <HighlightedTextarea
-      value={this.props.bullets.join('\n')}
-      disabled={this.props.disabled}
-      onChange={event => this.props.onChange(event)}
-      highlight={input => this.highlight(input)}
-    />
+      <HighlightedTextarea
+        regexp={this.state.regexp}
+        value={this.props.bullets.join('\n')}
+        disabled={this.props.disabled}
+        onChange={event => this.props.onChange(event)}
+      />
     );
   }
 }
