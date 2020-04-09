@@ -71,9 +71,6 @@ export default class HighlightedTextarea extends React.Component {
     // this keeps scrolling aligned when input ends with a newline
     highlightMarks = highlightMarks.replace(new RegExp('\\n(' + HighlightedTextarea.CLOSE_MARK + ')?$'), '\n\n$1');
 
-    // highlightMarks = highlightMarks.replace(new RegExp(HighlightedTextarea.OPEN_MARK, 'g'), '<mark>');
-    // highlightMarks = highlightMarks.replace(new RegExp(HighlightedTextarea.CLOSE_MARK, 'g'), '</mark>');
-
     return highlightMarks;
   }
 
