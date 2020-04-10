@@ -34,16 +34,13 @@ export default class BulletArea extends React.Component {
   }
 
   getRegExp() {
-    let regexp_def = "";
     let result = this.state.db.exec("SELECT word FROM words;")[0].values;
     result = result.sort((a, b) => {return b[0].length-a[0].length;});
-    result.forEach((item) => {
-      if (regexp_def.length) {
-        regexp_def = regexp_def + "|\\b" + item[0] + "\\b";
-      } else {
-        regexp_def = regexp_def + "\\b" + item[0] + "\\b";
-      }
-    });
+    
+    let regexp_def = "\\b(" + result.join("|").replace(/[\\[.+*?%&(){^$]/g, "\\$&") + ")(?=(\\s|$))";
+    regexp_def = regexp_def.replace(/\s/g, "\\s"); //Allow matches even after graberizing
+
+    console.log(regexp_def);
     this.setState({regexp: new RegExp(regexp_def, "gi")});
   }
   
