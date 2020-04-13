@@ -1,7 +1,6 @@
 import React from 'react';
 import { Grid, Paper, FormGroup, Switch, FormControlLabel } from '@material-ui/core';
 import BulletMenu from './BulletMenu';
-import BulletTester from './BulletTester';
 import GuidedBulletArea from './GuidedBulletArea';
 
 export default class BulletEditor extends React.Component {
@@ -16,10 +15,8 @@ export default class BulletEditor extends React.Component {
     };
   }
 
-  handleBulletChange(event) {
+  handleBulletChange(bullets) {
     if (!this.state.graberized) {
-      var bullets = this.state.bullets;
-      bullets = event.target.value.split("\n");
       this.setState({bullets: bullets});
     }
   }
@@ -159,23 +156,6 @@ export default class BulletEditor extends React.Component {
     return bulletArray.join('');
   }
 
-  createBulletTesters() {
-    var testers = [];
-    var bullets = this.state.bullets;
-
-    bullets.forEach(function(bullet, index) {
-      testers.push(
-        <BulletTester
-          value={bullet}
-          index={index}
-          handleWidthChange={(index, width) => this.handleWidthChange(index, width)}
-        />
-      );
-    }, this);
-
-    return(testers);
-  }
-
   render() {
     return (
       <div>
@@ -185,7 +165,8 @@ export default class BulletEditor extends React.Component {
               bullets={this.state.bullets}
               guide={this.state.guide}
               disabled={this.state.graberized}
-              onChange={event => this.handleBulletChange(event)}
+              onChange={bullets => this.handleBulletChange(bullets)}
+              handleWidthChange={(index, width) => this.handleWidthChange(index, width)}
             />
           </Grid>
           <Grid item>
@@ -196,8 +177,6 @@ export default class BulletEditor extends React.Component {
             />
           </Grid>
         </Grid>
-        {this.createBulletTesters()}
-
       </div>
     );
   }

@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import '../style/BulletTester.css';
 
 
-export default function BulletTester(props) {
+export default function Bullet(props) {
   const ref = useRef(null);
   const [width, setWidth] = useState(0);
 

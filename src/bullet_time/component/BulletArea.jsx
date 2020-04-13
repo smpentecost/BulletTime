@@ -1,7 +1,8 @@
 import React from 'react';
 import initSqlJs from "sql.js";
-import HighlightedTextarea from './HighlightedTextarea';
+import Bullet from './Bullet';
 import AcronymList from '../data/acronyms.sqlite';
+import '../style/BulletArea.css';
 
 export default class BulletArea extends React.Component {
 
@@ -10,6 +11,7 @@ export default class BulletArea extends React.Component {
   constructor(props){
     super(props);
     this.state = { db: null, err: null, regexp: null};
+    this.handleNewBullet = this.handleNewBullet.bind(this);
   }
 
   componentDidMount() {
@@ -22,7 +24,7 @@ export default class BulletArea extends React.Component {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', AcronymList , true);
         xhr.responseType = 'arraybuffer';
-    
+        
         xhr.onload = e => {
           var uInt8Array = new Uint8Array(xhr.response);
           var db = new SQL.Database(uInt8Array);
@@ -42,17 +44,52 @@ export default class BulletArea extends React.Component {
 
     this.setState({regexp: new RegExp(regexp_def, "gi")});
   }
+
+  handleNewBullet() {
+    let bullets = this.props.bullets;
+    bullets.push("- ");
+    this.props.onChange(bullets);
+  }
+
+  renderBullets() {
+    let lines = [];
+    let bullets = this.props.bullets;
+
+    bullets.forEach(function(bullet, index) {
+      lines.push(
+        <Bullet
+          value={bullet}
+          index={index}
+          handleWidthChange={(index, width) => this.props.handleWidthChange(index, width)}
+        />
+      );
+    }, this);
+
+    return(lines);
+  }
   
   render() {
     let { db, err, results } = this.state;
     if (!db) return <pre>Loading...</pre>;
     return(
-      <HighlightedTextarea
-        regexp={this.state.regexp}
-        value={this.props.bullets.join('\n')}
-        disabled={this.props.disabled}
-        onChange={event => this.props.onChange(event)}
-      />
+      <div
+        className={`bullet-container ${this.props.disabled ? "disabled" : ""}`}
+      >
+        <div
+          id="editable"
+          contentEditable="true"
+          onInput={event => this.props.onChange(event.target.innerText.split("\n"))}
+        >
+          {this.renderBullets()}
+        </div>
+        <div
+          id="tail"
+          onClick={this.handleNewBullet}
+        >
+          - Start a new bullet...
+        </div>
+
+      </div>
     );
   }
 }

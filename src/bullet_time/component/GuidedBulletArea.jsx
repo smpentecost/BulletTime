@@ -11,7 +11,8 @@ export default function GuidedBulletArea(props) {
         <BulletArea
           bullets={props.bullets}
           disabled={props.disabled}
-          onChange={event => props.onChange(event)}
+          onChange={bullets => props.onChange(bullets)}
+          handleWidthChange={(index, width) => props.handleWidthChange(index, width)}
         />
         <Guide
           position={props.guide}
