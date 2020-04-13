@@ -8,7 +8,7 @@ export default class BulletEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bullets: [], //Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
+      bullets: Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
       widths: [],
       graberized: false,
       guide: 763,

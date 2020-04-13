@@ -3,13 +3,14 @@ import '../style/HighlightedTextarea.css';
 
 export default class HighlightedTextarea extends React.Component {
 
-  static OPEN_MARK = '<span class=acronym>';
+  static OPEN_MARK = '<span class=mark>';
   static CLOSE_MARK = '</span>';
 
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.getHighlights = this.getHighlights.bind(this);
+    this.handleContextMenuCapture = this.handleContextMenuCapture.bind(this);
   }
 
   handleScroll(event) {
@@ -17,10 +18,10 @@ export default class HighlightedTextarea extends React.Component {
     this.refs.backdrop.scrollTop = scrollTop;
   }
 
-  openMark(id) {
-    console.log(id.replace(/\s/g, "-"));
-    return '<span id=' + id.replace(/\s/g, "-") +' class=acronym>';
-  }
+  // openMark(id) {
+  //   console.log(id.replace(/\s/g, "-"));
+  //   return '<span id=' + id.replace(/\s/g, "-") +' class=acronym>';
+  // }
 
   getHighlights() {
     let highlightMarks = this.props.value;
@@ -38,18 +39,31 @@ export default class HighlightedTextarea extends React.Component {
     return highlightMarks;
   }
 
-  handleClick(event){
-    event.preventDefault();
+  handleContextMenuCapture(event) {
     let x = event.clientX;
     let y = event.clientY;
-    console.log(event.target);
+    console.log(x, y);
+    console.log(event);
   }
 
   render() {
     return (
-      <div className="hwt-container">
+      <div
+        className="hwt-container"
+        onContextMenuCapture={this.handleContextMenuCapture}
+      >
+                <textarea
+                  className={`hwt-input hwt-content ${this.props.disabled ? "disabled" : ""}`}
+          onChange={event => this.props.onChange(event)}
+          onScroll={this.handleScroll}
+          value={this.props.value}
+          placeholder="Write your bullets here..."
+          rows="20"
+          autofocus="true"
+        />
         <div
-          className={`hwt-backdrop ${this.props.disabled ? "disabled" : ""}`}
+          contentEditable="true"
+          className="hwt-backdrop" 
           ref="backdrop"
         >
           <div
@@ -57,16 +71,8 @@ export default class HighlightedTextarea extends React.Component {
             dangerouslySetInnerHTML={{__html: this.getHighlights()}}
           />
         </div>
-        <textarea
-          className="hwt-input hwt-content"
-          onChange={event => this.props.onChange(event)}
-          onScroll={this.handleScroll}
-          value={this.props.value}
-          placeholder="Write your bullets here..."
-          rows="20"
-          autofocus="true"
-          onContextMenu={this.handleClick}
-        />
+
+
       </div>
     );
   }

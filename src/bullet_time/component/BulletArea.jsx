@@ -38,9 +38,8 @@ export default class BulletArea extends React.Component {
     result = result.sort((a, b) => {return b[0].length-a[0].length;});
     
     let regexp_def = "\\b(" + result.join("|").replace(/[\\[.+*?%&(){^$]/g, "\\$&") + ")(?=(\\s|$))";
-    regexp_def = regexp_def.replace(/\s/g, "\\s"); //Allow matches even after graberizing
+    regexp_def = regexp_def.replace(/\s/g, "\\s"); //Enable matches even after graberizing
 
-    console.log(regexp_def);
     this.setState({regexp: new RegExp(regexp_def, "gi")});
   }
   
