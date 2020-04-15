@@ -7,7 +7,7 @@ export default class BulletEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      bullets: Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
+      bullets: [], //Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
       widths: [],
       graberized: false,
       guide: 763,
@@ -29,7 +29,7 @@ export default class BulletEditor extends React.Component {
     bullets.forEach((bullet, index) => {
       if (!this.state.graberized) {
         const guide = this.state.guide;
-        console.log('trigger width', this.state.widths[index]);
+//        console.log('trigger width', this.state.widths[index]);
         bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
       } else { //Remove graber spaces
         bullets[index] = bullet.replace(
@@ -65,7 +65,7 @@ export default class BulletEditor extends React.Component {
     var bullets = this.state.bullets;
     bullets.forEach((bullet, index) => {
       if (this.state.graberized) {
-        console.log('trigger width', this.state.widths[index]);
+//        console.log('trigger width', this.state.widths[index]);
         bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
       }
     }, this);
@@ -146,8 +146,8 @@ export default class BulletEditor extends React.Component {
       ranks = promote(ranks);
     }
 
-    console.log(ranks);
-    console.log(width);
+//    console.log(ranks);
+//    console.log(width);
 
     spaces.forEach((position, index) => {
       bulletArray[position] = rank[ranks[index]];

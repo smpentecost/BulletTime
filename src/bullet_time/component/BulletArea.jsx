@@ -1,7 +1,7 @@
 import React from 'react';
 import initSqlJs from "sql.js";
-import Bullet from './Bullet';
 import AcronymList from '../data/acronyms.sqlite';
+import { Editor, EditorState } from 'draft-js';
 import '../style/BulletArea.css';
 
 export default class BulletArea extends React.Component {
@@ -10,7 +10,12 @@ export default class BulletArea extends React.Component {
   
   constructor(props){
     super(props);
-    this.state = { db: null, err: null, regexp: null};
+    this.state = {
+      db: null,
+      err: null,
+      regexp: null,
+    };
+    this.editor = React.createRef();
     this.handleNewBullet = this.handleNewBullet.bind(this);
   }
 
@@ -47,48 +52,32 @@ export default class BulletArea extends React.Component {
 
   handleNewBullet() {
     let bullets = this.props.bullets;
-    bullets.push("- ");
+    bullets.push("");
     this.props.onChange(bullets);
   }
 
-  renderBullets() {
-    let lines = [];
-    let bullets = this.props.bullets;
+  // handleInput = (bullets) =>{
+  //   let sel = window.getSelection();
+  //   let caret = sel.anchorOffset;
+  //   this.setState({
+  //     caret: caret,
+  //   });
+  //   this.props.onChange(bullets);
+  // };
 
-    bullets.forEach(function(bullet, index) {
-      lines.push(
-        <Bullet
-          value={bullet}
-          index={index}
-          handleWidthChange={(index, width) => this.props.handleWidthChange(index, width)}
-        />
-      );
-    }, this);
 
-    return(lines);
-  }
-  
   render() {
     let { db, err, results } = this.state;
     if (!db) return <pre>Loading...</pre>;
     return(
-      <div
-        className={`bullet-container ${this.props.disabled ? "disabled" : ""}`}
-      >
-        <div
-          id="editable"
-          contentEditable="true"
-          onInput={event => this.props.onChange(event.target.innerText.split("\n"))}
-        >
-          {this.renderBullets()}
-        </div>
-        <div
-          id="tail"
-          onClick={this.handleNewBullet}
+      <div className={`bullet-container ${this.props.disabled ? "disabled" : ""}`}>
+        <Editor
+        />
+        <div id="tail"
+             onClick={this.handleNewBullet}
         >
           - Start a new bullet...
         </div>
-
       </div>
     );
   }

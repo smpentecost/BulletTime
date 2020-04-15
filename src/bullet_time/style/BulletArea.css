@@ -2,10 +2,12 @@
     font-family: Times New Roman;
     font-size: 16px;
     position: relative;
-    overflow: scroll;
+    overflow: auto;
     min-width: 763px;
     height: 200px;
     padding: 4px;
+    display: flex;
+    flex-direction:column;
 }
 
 .bullet-container #editable {
@@ -13,18 +15,24 @@
 }
 
 .bullet-container #tail {
-    color: #969696;
+    flex: 1;
+    color: LightGray;
+    cursor: text;
+    transition: 0.2s;
 }
+
+.bullet-container #tail:hover {
+    color: Gray;
+}
+
 
 .disabled {
     background-color: #f2f2f2
 }
 
 .bullet-container .bullet {
-    display: inline;
+    display: table;
     height: auto;
     width: auto;
     white-space: pre;
 }
-
-
