@@ -14,9 +14,10 @@ export default class BulletArea extends React.Component {
       db: null,
       err: null,
       regexp: null,
+      editorState: EditorState.createEmpty(),
     };
-    this.editor = React.createRef();
     this.handleNewBullet = this.handleNewBullet.bind(this);
+    this.onChange = this.onChange.bind(this);
   }
 
   componentDidMount() {
@@ -56,14 +57,11 @@ export default class BulletArea extends React.Component {
     this.props.onChange(bullets);
   }
 
-  // handleInput = (bullets) =>{
-  //   let sel = window.getSelection();
-  //   let caret = sel.anchorOffset;
-  //   this.setState({
-  //     caret: caret,
-  //   });
-  //   this.props.onChange(bullets);
-  // };
+
+  onChange(editorState) {
+    this.props.onChange(editorState.getCurrentContent().getPlainText().split('\n'));
+    this.setState({editorState});
+  };
 
 
   render() {
@@ -71,11 +69,8 @@ export default class BulletArea extends React.Component {
     if (!db) return <pre>Loading...</pre>;
     return(
       <div className={`bullet-container ${this.props.disabled ? "disabled" : ""}`}>
-        <Editor
-        />
-        <div id="tail"
-             onClick={this.handleNewBullet}
-        >
+        <Editor editorState={this.state.editorState} onChange={this.onChange}/>
+        <div id="tail" onClick={this.handleNewBullet}>
           - Start a new bullet...
         </div>
       </div>

@@ -18,6 +18,7 @@ export default class BulletEditor extends React.Component {
   handleBulletChange(bullets) {
     if (!this.state.graberized) {
       this.setState({bullets: bullets});
+      console.log(bullets);
     }
   }
 
