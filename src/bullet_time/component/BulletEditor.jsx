@@ -1,6 +1,7 @@
 import React from 'react';
 import { Grid, Paper, FormGroup, Switch, FormControlLabel } from '@material-ui/core';
 import BulletMenu from './BulletMenu';
+import BulletTester from './BulletTester';
 import GuidedBulletArea from './GuidedBulletArea';
 
 export default class BulletEditor extends React.Component {
@@ -18,7 +19,6 @@ export default class BulletEditor extends React.Component {
   handleBulletChange(bullets) {
     if (!this.state.graberized) {
       this.setState({bullets: bullets});
-      console.log(bullets);
     }
   }
 
@@ -30,7 +30,7 @@ export default class BulletEditor extends React.Component {
     bullets.forEach((bullet, index) => {
       if (!this.state.graberized) {
         const guide = this.state.guide;
-//        console.log('trigger width', this.state.widths[index]);
+        console.log('trigger width', this.state.widths[index]);
         bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
       } else { //Remove graber spaces
         bullets[index] = bullet.replace(
@@ -66,7 +66,7 @@ export default class BulletEditor extends React.Component {
     var bullets = this.state.bullets;
     bullets.forEach((bullet, index) => {
       if (this.state.graberized) {
-//        console.log('trigger width', this.state.widths[index]);
+        console.log('trigger width', this.state.widths[index]);
         bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
       }
     }, this);
@@ -147,14 +147,31 @@ export default class BulletEditor extends React.Component {
       ranks = promote(ranks);
     }
 
-//    console.log(ranks);
-//    console.log(width);
+    console.log(ranks);
+    console.log(width);
 
     spaces.forEach((position, index) => {
       bulletArray[position] = rank[ranks[index]];
     });
 
     return bulletArray.join('');
+  }
+
+  createBulletTesters() {
+    var testers = [];
+    var bullets = this.state.bullets;
+
+    bullets.forEach(function(bullet, index) {
+      testers.push(
+        <BulletTester
+          value={bullet}
+          index={index}
+          handleWidthChange={(index, width) => this.handleWidthChange(index, width)}
+        />
+      );
+    }, this);
+
+    return(testers);
   }
 
   render() {
@@ -167,7 +184,6 @@ export default class BulletEditor extends React.Component {
               guide={this.state.guide}
               disabled={this.state.graberized}
               onChange={bullets => this.handleBulletChange(bullets)}
-              handleWidthChange={(index, width) => this.handleWidthChange(index, width)}
             />
           </Grid>
           <Grid item>
@@ -178,6 +194,7 @@ export default class BulletEditor extends React.Component {
             />
           </Grid>
         </Grid>
+        {this.createBulletTesters()}
       </div>
     );
   }

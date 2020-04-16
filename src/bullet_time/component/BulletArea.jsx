@@ -1,23 +1,49 @@
 import React from 'react';
 import initSqlJs from "sql.js";
 import AcronymList from '../data/acronyms.sqlite';
-import { Editor, EditorState } from 'draft-js';
+import { CompositeDecorator, Editor, EditorState } from 'draft-js';
+import AcronymDecorator from './AcronymDecorator';
 import '../style/BulletArea.css';
+
+
 
 export default class BulletArea extends React.Component {
 
   static SQL_Search = "SELECT * FROM words;";
+
   
   constructor(props){
     super(props);
+    const compositeDecorator = new CompositeDecorator([
+      {
+        strategy: this.acronymStrategy,
+        component:AcronymDecorator,
+      },
+    ]);
     this.state = {
       db: null,
       err: null,
       regexp: null,
-      editorState: EditorState.createEmpty(),
+      editorState: EditorState.createEmpty(compositeDecorator),
     };
     this.handleNewBullet = this.handleNewBullet.bind(this);
     this.onChange = this.onChange.bind(this);
+  }
+
+
+
+
+  acronymStrategy(contentBlock, callback, contentState) {
+    const findWithRegex = (regex, contentBlock, callback) => {
+      const text = contentBlock.getText();
+      let matchArr, start;
+      while ((matchArr = regex.exec(text)) !== null) {
+        start = matchArr.index;
+        callback(start, start + matchArr[0].length);
+      }
+    };
+    findWithRegex(/this/g, contentBlock, callback);
+    console.log(contentState);
   }
 
   componentDidMount() {
@@ -51,6 +77,7 @@ export default class BulletArea extends React.Component {
     this.setState({regexp: new RegExp(regexp_def, "gi")});
   }
 
+
   handleNewBullet() {
     let bullets = this.props.bullets;
     bullets.push("");
@@ -62,6 +89,8 @@ export default class BulletArea extends React.Component {
     this.props.onChange(editorState.getCurrentContent().getPlainText().split('\n'));
     this.setState({editorState});
   };
+
+   
 
 
   render() {

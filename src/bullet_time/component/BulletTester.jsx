@@ -12,13 +12,13 @@ export default function BulletTester(props) {
     setWidth(ref.current ? ref.current.offsetWidth : 0);
   });
 
-  //Set the parent width any time the local state width changes
+    //Set the parent width any time the local state width changes
   useEffect(() => {
     props.handleWidthChange(props.index, width);
   }, [width, props.value]);
   
   return (
-    <div ref={ref} className="bullet">
+    <div ref={ref} className="bullet-tester">
       {props.value}
     </div>
   );
