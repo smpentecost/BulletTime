@@ -1,6 +1,13 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Container, Divider, FormControlLabel, FormGroup, Grid, Paper, Switch, Toolbar, Typography } from '@material-ui/core';
+import { AppBar,
+         Divider,
+         FormControlLabel,
+         Grid,
+         Paper,
+         Switch,
+         Toolbar,
+         Typography } from '@material-ui/core';
 import TrimController from './TrimController';
 
 const useStyles = makeStyles((theme) => ({
@@ -40,7 +47,7 @@ export default function BulletMenu(props) {
           <FormControlLabel
             control=
               {<Switch
-                 checked={props.checked}
+                 checked={props.graberized}
                  onChange={() => props.onGraberize()}
                />}
             label="Graberize"

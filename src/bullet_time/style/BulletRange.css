@@ -51,3 +51,6 @@
     border-style: solid;
 }
 
+.guided-range {
+    position: relative;
+}

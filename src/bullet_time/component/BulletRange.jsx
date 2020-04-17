@@ -1,16 +1,24 @@
+// 3rd party imports
 import React from 'react';
 import initSqlJs from "sql.js";
-import AcronymList from '../data/acronyms.sqlite';
 import { CompositeDecorator, Editor, EditorState } from 'draft-js';
+import { Paper } from '@material-ui/core';
+
+// Components
 import AcronymDecorator from './AcronymDecorator';
-import '../style/BulletArea.css';
+import Guide from './Guide';
+
+// Data
+import AcronymList from '../data/acronyms.sqlite';
+
+// Style
+import '../style/BulletRange.css';
 
 
 
-export default class BulletArea extends React.Component {
+export default class BulletRange extends React.Component {
 
   static SQL_Search = "SELECT * FROM words;";
-
   
   constructor(props){
     super(props);
@@ -29,9 +37,6 @@ export default class BulletArea extends React.Component {
     this.handleNewBullet = this.handleNewBullet.bind(this);
     this.onChange = this.onChange.bind(this);
   }
-
-
-
 
   acronymStrategy(contentBlock, callback, contentState) {
     const findWithRegex = (regex, contentBlock, callback) => {
@@ -90,19 +95,26 @@ export default class BulletArea extends React.Component {
     this.setState({editorState});
   };
 
-   
-
-
   render() {
     let { db, err, results } = this.state;
     if (!db) return <pre>Loading...</pre>;
     return(
-      <div className={`bullet-container ${this.props.disabled ? "disabled" : ""}`}>
-        <Editor editorState={this.state.editorState} onChange={this.onChange}/>
-        <div id="tail" onClick={this.handleNewBullet}>
-          - Start a new bullet...
-        </div>
+    <Paper elevation={6}>
+      <div className="guided-range">
+        <div className={`bullet-container ${this.props.disabled ? "disabled" : ""}`}>
+          <Editor editorState={this.state.editorState} onChange={this.onChange}/>
+          <div id="tail" onClick={this.handleNewBullet}>
+            - Start a new bullet...
+          </div>
       </div>
+
+        <Guide
+          position={props.guide}
+        />
+      </div>
+    </Paper>
+
+      
     );
   }
 }
