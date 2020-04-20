@@ -1,0 +1,21 @@
+import React from 'react';
+import { useEffect, useRef, useState } from 'react';
+import '../style/Ruler.css';
+
+
+export default function Ruler(props) {
+  const ref = useRef(null);
+  const [width, setWidth] = useState(0);
+
+  // Report the width any time the content changes
+  useEffect(() => {
+    let width = ref.current ? ref.current.offsetWidth: 0;
+    props.onChange(width);
+  }, [props.content]);
+  
+  return (
+    <div ref={ref} className="ruler">
+      {props.content}
+    </div>
+  );
+}

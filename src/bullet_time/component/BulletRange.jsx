@@ -1,7 +1,14 @@
 // 3rd party imports
 import React from 'react';
 import initSqlJs from "sql.js";
-import { ContentState, Editor, EditorChangeType, EditorState } from 'draft-js';
+import { List } from 'immutable';
+import { ContentBlock,
+         ContentState,
+         Editor,
+         EditorChangeType,
+         EditorState,
+         genKey
+       } from 'draft-js';
 import { Paper } from '@material-ui/core';
 
 // Components
@@ -15,10 +22,12 @@ import AcronymList from '../data/acronyms.sqlite';
 // Style
 import '../style/BulletRange.css';
 
-function bulletRenderer(contentBlock) {
+function bulletRenderer(contentBlock, onChange) {
   return {
     component: Bullet,
-    editable: true,
+    props: {
+      onChange: (key, width) => onChange(key, width),
+    },
   };
 }
 
@@ -88,30 +97,35 @@ export default function BulletRange(props) {
   //   this.setState({regexp: new RegExp(regexp_def, "gi")});
   // }
 
-
   const handleNewBullet = () => {
-    let currentText = props.editorState.getCurrentContent().getPlainText();
-    if (currentText === "") {
-      currentText += '- ';
+    const newBlock = new ContentBlock({
+      key: genKey(),
+      type: 'unstyled',
+      text: '- ',
+    });
+
+    const content = props.editorState.getCurrentContent();
+    let blockMap = content.getBlockMap();
+    if (content.hasText()) {
+      blockMap = blockMap.set(newBlock.key, newBlock);
     } else {
-      currentText += '\n- ';
+      blockMap = blockMap.clear().set(newBlock.key, newBlock);
     }
-    const newContent = ContentState.createFromText(currentText);
+    const newContentState = ContentState.createFromBlockArray(blockMap.toArray());
+
     const editorState = EditorState.moveFocusToEnd(
       EditorState.push(
         props.editorState,
-        newContent,
+        newContentState,
         'insert-characters'
       )
     );
     props.onChange(editorState);
   };
 
-
-  // onChange(editorState) {
-  //   this.props.onChange(editorState.getCurrentContent().getPlainText().split('\n'));
-  //   this.setState({editorState});
-  // };
+  const handleWidthMeasurement = (key, width) => {
+    console.log(key, width);
+  };
 
   // let { db, err, results } = this.state;
   // if (!db) return <pre>Loading...</pre>;
@@ -125,7 +139,11 @@ export default function BulletRange(props) {
              editorState={props.editorState}
              readOnly={props.disabled}
              onChange={editorState => props.onChange(editorState)}
-           //            blockRendererFn={bulletRenderer}
+             blockRendererFn={contentBlock =>
+                              bulletRenderer(
+                                contentBlock,
+                                handleWidthMeasurement
+                              )}
            />
           }
           <div

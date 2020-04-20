@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { EditorState } from 'draft-js';
+import { ContentState, EditorState } from 'draft-js';
 import BulletMenu from './BulletMenu';
 import BulletRange from './BulletRange';
 
@@ -90,13 +90,7 @@ export default class BulletComposer extends React.Component {
   handleEditorChange(editorState) {
     this.setState({editorState});
     const content = editorState.getCurrentContent();
-    const block = content.getFirstBlock();
-    const key = block.getKey();
-    const data = block.getData();
-    const entity = block.getEntityAt(0);
-//    const eData = e.getData();
-    console.log(entity);
-//    console.log();
+    const blockArray = content.getBlocksAsArray();
   };
 
 
