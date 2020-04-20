@@ -1,4 +1,8 @@
-.bullet-container {
+.guided-range {
+    position: relative;
+}
+
+.bullet-range {
     font-family: Times New Roman;
     font-size: 16px;
     position: relative;
@@ -10,27 +14,31 @@
     flex-direction:column;
 }
 
-.bullet-container #editable {
+.bullet-range #editable {
     outline: none;
 }
 
-.bullet-container #tail {
+.bullet-range #tail {
     flex: 1;
     color: LightGray;
     cursor: text;
     transition: 0.2s;
 }
 
-.bullet-container #tail:hover {
+.bullet-range #tail:hover {
     color: Gray;
 }
 
+.disabled #tail {
+    transition: 0s;
+    visibility:hidden
+}
 
 .disabled {
     background-color: #f2f2f2
 }
 
-.bullet-container .bullet {
+.bullet-range .bullet {
     display: table;
     height: auto;
     width: auto;
@@ -51,6 +59,3 @@
     border-style: solid;
 }
 
-.guided-range {
-    position: relative;
-}

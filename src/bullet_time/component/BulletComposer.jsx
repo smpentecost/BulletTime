@@ -2,22 +2,19 @@ import React from 'react';
 import { Grid } from '@material-ui/core';
 import { EditorState } from 'draft-js';
 import BulletMenu from './BulletMenu';
-//import BulletTester from './BulletTester';
 import BulletRange from './BulletRange';
 
 
 export default class BulletComposer extends React.Component {
 
-  static GUIDE_DEFAULT=763; //px
-  
+  GUIDE_DEFAULT = 763;
+
   constructor(props) {
     super(props);
     this.state = {
-//      bullets: [], //Array(1).fill('- Develops threat radar models/simulations; drives US/Allied radar warning reprogramming & intel mission data feeds'), //[].
-      //      widths: [],
       editorState: EditorState.createEmpty(),
       graberized: false,
-      guide: this.GUIDE_DEFAULT,
+      guide: this.GUIDE_DEFAULT, //px
     };
   }
 
@@ -27,25 +24,24 @@ export default class BulletComposer extends React.Component {
 //     }
 //   }
 
-//   handleAutoSpace() {
-//     var bullets = this.state.bullets;
-//     bullets.forEach((bullet, index) => {
-//       if (!this.state.graberized) {
-//         const guide = this.state.guide;
-//         console.log('trigger width', this.state.widths[index]);
-//         bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
-//       } else { //Remove graber spaces
-//         bullets[index] = bullet.replace(
-//           /[\u2004\u2006\u2007\u2009]/g,
-//           ' '
-//         );
-//       }
-//     }, this);
+  handleGraberize() {
+    // var bullets = this.state.bullets;
+    // bullets.forEach((bullet, index) => {
+    //   if (!this.state.graberized) {
+    //     const guide = this.state.guide;
+    //     console.log('trigger width', this.state.widths[index]);
+    //     bullets[index] = this.graberSpace(index, this.state.widths[index], guide);
+    //   } else { Remove graber spaces
+    //     bullets[index] = bullet.replace(
+    //       /[\u2004\u2006\u2007\u2009]/g,
+    //       ' '
+    //     );
+    //   }
+    // }, this);
 
-//   this.setState({
-//     bullets: bullets,
-//     graberized: !this.state.graberized});
-// }
+  this.setState({
+    graberized: !this.state.graberized});
+  }
 
 //   handleWidthChange(index, width) {
 //     const guide = this.state.guide;
@@ -63,7 +59,7 @@ export default class BulletComposer extends React.Component {
 
   handleTrim(arg) {
     const guide = this.GUIDE_DEFAULT + arg;
-    this.setState({guide: guide});
+    this.setState({guide});
 
     // var bullets = this.state.bullets;
     // bullets.forEach((bullet, index) => {
@@ -75,22 +71,32 @@ export default class BulletComposer extends React.Component {
     // this.setState({bullets: bullets,});
   }
 
-//   createBulletTesters() {
-//     var testers = [];
-//     var bullets = this.state.bullets;
+  // createBulletTesters() {
+  //   var testers = [];
+  //   var bullets = this.state.bullets;
 
-//     bullets.forEach(function(bullet, index) {
-//       testers.push(
-//         <BulletTester
-//           value={bullet}
-//           index={index}
-//           handleWidthChange={(index, width) => this.handleWidthChange(index, width)}
-//         />
-//       );
-//     }, this);
+  //   bullets.forEach(function(bullet, index) {
+  //     testers.push(
+  //       <BulletTester
+  //         value={bullet}
+  //         index={index}
+  //         handleWidthChange={(index, width) => this.handleWidthChange(index, width)}
+  //       />
+  //     );
+  //   }, this);
 
-//     return(testers);
-//   }
+  //   return(testers);
+  //   }
+
+  handleEditorChange(editorState) {
+    this.setState({editorState});
+    const content = editorState.getCurrentContent();
+    const block = content.getFirstBlock();
+    const key = block.getKey();
+    const data = block.getData();
+    console.log(data);
+  };
+
 
   render() {
     return (
@@ -101,13 +107,13 @@ export default class BulletComposer extends React.Component {
               editorState={this.state.editorState}
               guide={this.state.guide}
               disabled={this.state.graberized}
-//              onChange={bullets => this.handleBulletChange(bullets)}
+              onChange={editorState => this.handleEditorChange(editorState)}
             />
           </Grid>
           <Grid item>
             <BulletMenu
               graberized={this.state.graberized}
-              onGraberize={() => this.handleAutoSpace()}
+              onGraberize={() => this.handleGraberize()}
               onTrim={(arg) => this.handleTrim(arg)}
             />
           </Grid>
