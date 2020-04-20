@@ -1,7 +1,7 @@
 // 3rd party imports
 import React from 'react';
 import initSqlJs from "sql.js";
-import { CompositeDecorator, Editor, EditorState } from 'draft-js';
+import { ContentState, Editor, EditorChangeType, EditorState } from 'draft-js';
 import { Paper } from '@material-ui/core';
 
 // Components
@@ -89,11 +89,23 @@ export default function BulletRange(props) {
   // }
 
 
-  // handleNewBullet() {
-  //   let bullets = this.props.bullets;
-  //   bullets.push("");
-  //   this.props.onChange(bullets);
-  // }
+  const handleNewBullet = () => {
+    let currentText = props.editorState.getCurrentContent().getPlainText();
+    if (currentText === "") {
+      currentText += '- ';
+    } else {
+      currentText += '\n- ';
+    }
+    const newContent = ContentState.createFromText(currentText);
+    const editorState = EditorState.moveFocusToEnd(
+      EditorState.push(
+        props.editorState,
+        newContent,
+        'insert-characters'
+      )
+    );
+    props.onChange(editorState);
+  };
 
 
   // onChange(editorState) {
@@ -103,19 +115,22 @@ export default function BulletRange(props) {
 
   // let { db, err, results } = this.state;
   // if (!db) return <pre>Loading...</pre>;
+
   return(
     <Paper elevation={6}>
       <div className="guided-range">
         <div className={`bullet-range ${props.disabled ? "disabled" : ""}`}>
-          <Editor
-            editorState={props.editorState}
-            readOnly={props.disabled}
-            onChange={editorState => props.onChange(editorState)}
-//            blockRendererFn={bulletRenderer}
-          />
+          {props.editorState.getCurrentContent().hasText() &&
+           <Editor
+             editorState={props.editorState}
+             readOnly={props.disabled}
+             onChange={editorState => props.onChange(editorState)}
+           //            blockRendererFn={bulletRenderer}
+           />
+          }
           <div
             id="tail"
-          //  onClick={this.handleNewBullet}
+            onClick={handleNewBullet}
           >
             - Start a new bullet...
           </div>

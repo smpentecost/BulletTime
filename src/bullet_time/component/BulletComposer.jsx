@@ -39,8 +39,7 @@ export default class BulletComposer extends React.Component {
     //   }
     // }, this);
 
-  this.setState({
-    graberized: !this.state.graberized});
+    this.setState({graberized: !this.state.graberized});
   }
 
 //   handleWidthChange(index, width) {
@@ -94,7 +93,10 @@ export default class BulletComposer extends React.Component {
     const block = content.getFirstBlock();
     const key = block.getKey();
     const data = block.getData();
-    console.log(data);
+    const entity = block.getEntityAt(0);
+//    const eData = e.getData();
+    console.log(entity);
+//    console.log();
   };
 
 
