@@ -51,3 +51,6 @@
     border-style: solid;
 }
 
+.bullet-block div{
+    display: inline;
+}

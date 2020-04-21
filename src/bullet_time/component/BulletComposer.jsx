@@ -67,7 +67,6 @@ export default class BulletComposer extends React.Component {
                    bulletWidths: bulletWidths});
   }
 
-
   handleGraberize() {
     const graberize = !this.state.graberized;
     this.setState({graberized: graberize}, () => this.graberizeContent(true));
@@ -88,7 +87,7 @@ export default class BulletComposer extends React.Component {
   handleTrim(arg) {
     const guide = this.GUIDE_DEFAULT + arg;
     this.setState({guide});
-
+    this.graberizeContent(true);
   }
 
   render() {

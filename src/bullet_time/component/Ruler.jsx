@@ -13,8 +13,8 @@ export default function Ruler(props) {
   }, [props.content]);
   
   return (
-    <div ref={ref} className="ruler">
-      {props.content}
-    </div>
+    <span ref={ref} className="ruler">
+      {'- ' + props.content}
+    </span>
   );
 }
