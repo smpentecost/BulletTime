@@ -15,8 +15,7 @@ export function  graberSpace(bullet, width, guide) {
 
   const promote = (ranks) => {
     let newRanks = ranks;
-    // Intentionally slicing so that we don't change the first space
-    var indexOfMinValue = ranks.slice(1).reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0) + 1;
+    var indexOfMinValue = ranks.slice().reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0);
     newRanks[indexOfMinValue]++;
     if (newRanks[indexOfMinValue] > 4) {
       newRanks[indexOfMinValue] = 4;

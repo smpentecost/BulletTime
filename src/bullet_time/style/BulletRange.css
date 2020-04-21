@@ -52,5 +52,5 @@
 }
 
 .bullet-block div{
-    display: inline;
+    display: inline-block;
 }

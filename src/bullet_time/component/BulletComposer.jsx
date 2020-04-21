@@ -7,6 +7,7 @@ import { ContentBlock,
        } from 'draft-js';
 import BulletMenu from './BulletMenu';
 import BulletRange from './BulletRange';
+import Ruler from './Ruler';
 import { graberSpace } from '../logic/GraberUtils.js';
 
 
@@ -22,6 +23,22 @@ export default class BulletComposer extends React.Component {
       graberized: false,
       guide: this.GUIDE_DEFAULT, //px
     };
+  }
+
+  renderRulers() {
+    let rulers = [];
+    const blockArray = this.state.editorState.getCurrentContent().getBlocksAsArray();
+
+    blockArray.forEach((block) => {
+      rulers.push(
+        <Ruler
+          onChange={(width) => this.handleWidthMeasurement(block.getKey(), width)}
+          content={block.getText()}
+        />
+      );
+    }, this);
+
+    return(rulers);
   }
 
   graberizeContent(forceReview=false) {
@@ -111,6 +128,7 @@ export default class BulletComposer extends React.Component {
             />
           </Grid>
         </Grid>
+        {this.state.graberized && this.renderRulers()}
       </div>
     );
   }
