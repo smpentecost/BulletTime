@@ -1,9 +1,17 @@
 import React from 'react';
+import initSqlJs from "sql.js";
+import { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
+
+// Components
 import AppBar from './component/AppBar';
 import BulletComposer from './component/BulletComposer';
 
+// Data
+import AcronymList from './data/acronyms.sqlite';
+
+// Style
 import './App.css';
 
 const theme = createMuiTheme({
@@ -18,6 +26,54 @@ const theme = createMuiTheme({
 });
       
 export default class BulletTime extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      acronymDb: null,
+      err: null,
+      acronymRegExp: null,
+    };
+  }
+
+  componentDidMount() {
+    // sql.js needs to fetch its wasm file, so we cannot immediately
+    // instantiate the database without any configuration, initSqlJs
+    // will fetch the wasm files directly from the same path as the js
+    // see ../config-overrides.js
+    initSqlJs()
+      .then(SQL => {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', AcronymList , true);
+        xhr.responseType = 'arraybuffer';
+  
+        xhr.onload = e => {
+          var uInt8Array = new Uint8Array(xhr.response);
+          var db = new SQL.Database(uInt8Array);
+          this.setState({ acronymDb: db }, this.getRegExp);
+        };
+        xhr.send();
+      })
+      .catch(err => this.setState({ err }));
+  }
+
+  getRegExp() {
+    let db = this.state.acronymDb;
+    let result = db.exec("SELECT word FROM words;")[0].values;
+    result = result.sort((a, b) => {return b[0].length-a[0].length;});
+  
+    let regexp_def = "\\b(" + result.join("|").replace(/[\\[.+*?%&(){^$]/g, "\\$&") + ")(?=(\\s|$))";
+    regexp_def = regexp_def.replace(/\s/g, "\\s"); //Enable matches even after graberizing
+
+    this.setState({acronymRegExp: new RegExp(regexp_def, "gi")});
+  }
+
+  renderComposer() {
+    let regexp = this.state.acronymRegExp;
+    if (!regexp) return <pre>Loading...</pre>;
+
+    return <BulletComposer regexp={this.state.acronymRegExp}/>;
+  }
+  
   render() {
     return (
       <ThemeProvider theme={theme}>
@@ -30,7 +86,7 @@ export default class BulletTime extends React.Component {
             <AppBar />
           </Grid>
           <Grid item>
-            <BulletComposer />
+            {this.renderComposer()}
           </Grid>
         </Grid>
       </ThemeProvider>

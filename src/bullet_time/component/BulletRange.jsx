@@ -1,6 +1,5 @@
 // 3rd party imports
 import React from 'react';
-import initSqlJs from "sql.js";
 import { ContentBlock,
          ContentState,
          Editor,
@@ -10,12 +9,8 @@ import { ContentBlock,
 import { Paper } from '@material-ui/core';
 
 // Components
-import AcronymDecorator from './AcronymDecorator';
 import Bullet from './Bullet';
 import Guide from './Guide';
-
-// Data
-import AcronymList from '../data/acronyms.sqlite';
 
 // Style
 import '../style/BulletRange.css';
@@ -54,18 +49,10 @@ export default function BulletRange(props) {
     props.onChange(newEditorState);
   };
 
-  // let { db, err, results } = this.state;
-  // if (!db) return <pre>Loading...</pre>;
-
- //         {//props.editorState.getCurrentContent().hasText() &&
-//           props.editorState.getSelection().getHasFocus() &&
-
-  
   return(
     <Paper elevation={6}>
       <div className="guided-range">
         <div className={`bullet-range ${props.disabled ? "disabled" : ""}`}>
-          {console.log('render')}
            <Editor
              editorState={props.editorState}
              readOnly={props.disabled}

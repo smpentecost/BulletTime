@@ -1,27 +1,59 @@
+// 3rd party imports
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { ContentBlock,
+import { CompositeDecorator,
+         ContentBlock,
          ContentState,
          EditorState,
          genKey
        } from 'draft-js';
+
+//Components
+import AcronymDecorator from './AcronymDecorator';
 import BulletMenu from './BulletMenu';
 import BulletRange from './BulletRange';
 import Ruler from './Ruler';
+
+//Logic
 import { graberSpace } from '../logic/GraberUtils.js';
 
 
+/* This component holds the editor and menus associated with the
+ * bullets. For now, it is essentially the top level component,
+ * ignoring the header and app drawer.
+ */
 export default class BulletComposer extends React.Component {
 
   GUIDE_DEFAULT = 763;
 
   constructor(props) {
     super(props);
+
+    const  acronymStrategy = (contentBlock, callback, contentState) =>{
+      const findWithRegex = (regex, contentBlock, callback) => {
+        const text = contentBlock.getText();
+        let matchArr, start;
+        while ((matchArr = regex.exec(text)) !== null) {
+          start = matchArr.index;
+          callback(start, start + matchArr[0].length);
+        }
+      };
+      findWithRegex(props.regexp, contentBlock, callback);
+    };
+
+    const compositeDecorator = new CompositeDecorator([
+      {
+        strategy:acronymStrategy,
+        component:AcronymDecorator,
+      },
+    ]);
+
     this.state = {
-      editorState: EditorState.createEmpty(),
+      editorState: EditorState.createEmpty(compositeDecorator),
       bulletWidths: new Map(),
       graberized: false,
       guide: this.GUIDE_DEFAULT, //px
+      regexp: this.props.regexp,
     };
   }
 
