@@ -42,8 +42,13 @@ export default function ButtonAppBar() {
           style={{objectFit: 'cover', maxHeight: '40px'}}
         />
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon onClick={toggleDrawer(true)}/>
+          <IconButton
+            edge="start"
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="menu"
+            onClick={toggleDrawer(true)}>
+            <MenuIcon/>
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             Bullet Time

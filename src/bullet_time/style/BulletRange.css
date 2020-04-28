@@ -41,14 +41,12 @@
 .acronym {
     color: black;
     background-color: #d7ff86;
-    border-radius: 5px;
+    border-radius: 2px;
 }
 
 .acronym:hover{
     background-color: #b2ff59;
-    border: #AAAAAA;
-    border-width: 1px;
-    border-style: solid;
+    cursor: context-menu;
 }
 
 .bullet-block div{

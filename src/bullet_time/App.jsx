@@ -71,7 +71,10 @@ export default class BulletTime extends React.Component {
     let regexp = this.state.acronymRegExp;
     if (!regexp) return <pre>Loading...</pre>;
 
-    return <BulletComposer regexp={this.state.acronymRegExp}/>;
+    return <BulletComposer
+             regexp={this.state.acronymRegExp}
+             db={this.state.acronymDb}
+           />;
   }
   
   render() {

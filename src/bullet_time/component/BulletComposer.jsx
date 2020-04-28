@@ -5,6 +5,8 @@ import { CompositeDecorator,
          ContentBlock,
          ContentState,
          EditorState,
+         Modifier,
+         SelectionState,
          genKey
        } from 'draft-js';
 
@@ -30,15 +32,7 @@ export default class BulletComposer extends React.Component {
     super(props);
 
     const  acronymStrategy = (contentBlock, callback, contentState) =>{
-      const findWithRegex = (regex, contentBlock, callback) => {
-        const text = contentBlock.getText();
-        let matchArr, start;
-        while ((matchArr = regex.exec(text)) !== null) {
-          start = matchArr.index;
-          callback(start, start + matchArr[0].length);
-        }
-      };
-      findWithRegex(props.regexp, contentBlock, callback);
+      this.findWithRegex(props.regexp, contentBlock, callback, contentState);
     };
 
     const compositeDecorator = new CompositeDecorator([
@@ -55,6 +49,44 @@ export default class BulletComposer extends React.Component {
       guide: this.GUIDE_DEFAULT, //px
       regexp: this.props.regexp,
     };
+  }
+
+  findWithRegex(regex, contentBlock, callback, contentState) {
+    const text = contentBlock.getText();
+    let matchArr, start, end;
+    while ((matchArr = regex.exec(text)) !== null) {
+      start = matchArr.index;
+      end = start + matchArr[0].length;
+
+      const selection = SelectionState
+            .createEmpty(contentBlock.getKey())
+            .set("anchorOffset", start)
+            .set("focusOffset", end-1);
+
+      contentState.createEntity(
+        "ACRONYM", // type
+        "MUTABLE", // mutability <--
+      );
+      const entityKey = contentState.getLastCreatedEntityKey();
+      console.log(start, end);
+      console.log(entityKey);
+      const newContentState = Modifier.applyEntity(
+        contentState,
+        selection,
+        entityKey
+      );
+
+      console.log(contentState);
+      console.log(newContentState);
+
+      const editorState = this.state.editorState;
+      // const newEditorState = EditorState.set(
+      //   editorState,
+      //   {currentContent: newContentState},
+      // );
+
+      callback(start, end);
+    }
   }
 
   renderRulers() {
