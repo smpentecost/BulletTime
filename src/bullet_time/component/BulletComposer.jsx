@@ -18,6 +18,7 @@ import Ruler from './Ruler';
 
 //Logic
 import { graberSpace } from '../logic/GraberUtils.js';
+import { findWithRegex } from '../logic/Utils.js';
 
 
 /* This component holds the editor and menus associated with the
@@ -32,13 +33,14 @@ export default class BulletComposer extends React.Component {
     super(props);
 
     const  acronymStrategy = (contentBlock, callback, contentState) =>{
-      this.findWithRegex(props.regexp, contentBlock, callback, contentState);
+      findWithRegex(props.regexp, contentBlock, callback);
     };
 
     const compositeDecorator = new CompositeDecorator([
       {
         strategy:acronymStrategy,
         component:AcronymDecorator,
+        props:{db: props.db}
       },
     ]);
 
@@ -51,47 +53,11 @@ export default class BulletComposer extends React.Component {
     };
   }
 
-  findWithRegex(regex, contentBlock, callback, contentState) {
-    const text = contentBlock.getText();
-    let matchArr, start, end;
-    while ((matchArr = regex.exec(text)) !== null) {
-      start = matchArr.index;
-      end = start + matchArr[0].length;
-
-      const selection = SelectionState
-            .createEmpty(contentBlock.getKey())
-            .set("anchorOffset", start)
-            .set("focusOffset", end-1);
-
-      contentState.createEntity(
-        "ACRONYM", // type
-        "MUTABLE", // mutability <--
-      );
-      const entityKey = contentState.getLastCreatedEntityKey();
-      console.log(start, end);
-      console.log(entityKey);
-      const newContentState = Modifier.applyEntity(
-        contentState,
-        selection,
-        entityKey
-      );
-
-      console.log(contentState);
-      console.log(newContentState);
-
-      const editorState = this.state.editorState;
-      // const newEditorState = EditorState.set(
-      //   editorState,
-      //   {currentContent: newContentState},
-      // );
-
-      callback(start, end);
-    }
-  }
-
   renderRulers() {
     let rulers = [];
-    const blockArray = this.state.editorState.getCurrentContent().getBlocksAsArray();
+    const blockArray = this.state.editorState
+          .getCurrentContent()
+          .getBlocksAsArray();
 
     blockArray.forEach((block) => {
       rulers.push(

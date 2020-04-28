@@ -9,17 +9,24 @@ import { ContentBlock } from 'draft-js';
 
 export default function  AcronymDecorator(props) {
   const [content, setContent] = useState(props.children);
+  const [option, setOption] = useState(props.children);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [db, setDb] = useState(props.db);
   const open = Boolean(anchorEl);
-//  console.log(props.children);
   
   const handleContextMenu = (event) => {
     event.preventDefault();
     setAnchorEl(event.currentTarget);
   };
 
+  const handleClick = event => {
+    setAnchorEl(null);
+    setOption(content);
+  };
+  
   const handleClose = () => {
     setAnchorEl(null);
+    setContent(option);
   };
 
   const handlePreview = event => {
@@ -43,15 +50,23 @@ export default function  AcronymDecorator(props) {
     setContent([preview]);
   };
 
-  const renderMenuOptions = () => {
-    let items = [];
-    let testList = ['this', 'and', 'here'];
 
-    for (const item of testList) {
-      items.push(
+  const renderMenuOptions = () => {
+    let pair_id = db.exec(
+      "SELECT pair_id FROM words WHERE word LIKE '" +
+        content[0].props.text + "';"
+    )[0].values[0];
+    let items = db.exec(
+      "SELECT word FROM words WHERE pair_id = " + pair_id + ";"
+    )[0].values;
+    let itemRenders = [];
+
+    for (const item of items) {
+      itemRenders.push(
         <ListItem button
                   key={item}
                   onMouseOver={handlePreview}
+                  onClick={handleClick}
         >
           <ListItemText>
             {item}
@@ -59,7 +74,7 @@ export default function  AcronymDecorator(props) {
         </ListItem>
       );
     }
-    return (<List dense> {items} </List>);
+    return (<List dense> {itemRenders} </List>);
   };
   
   return(
