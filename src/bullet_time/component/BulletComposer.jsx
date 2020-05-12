@@ -40,7 +40,11 @@ export default class BulletComposer extends React.Component {
       {
         strategy:acronymStrategy,
         component:AcronymDecorator,
-        props:{db: props.db}
+        props:{
+          db: props.db,
+          onChange: contentState =>
+            this.handleContentChange(contentState)
+        }
       },
     ]);
 
@@ -121,6 +125,16 @@ export default class BulletComposer extends React.Component {
 
   handleEditorChange(editorState) {
     this.setState({editorState});
+  };
+
+  handleContentChange(contentState) {
+    const editorState = this.state.editorState;
+    const newEditorState = EditorState.push(
+      editorState,
+      contentState
+    );
+    console.log(contentState.getPlainText());
+    this.handleEditorChange(newEditorState);
   };
 
   handleWidthMeasurement(key, width) {
