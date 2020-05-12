@@ -19,7 +19,6 @@ export default function  AcronymDecorator(props) {
   const handleContextMenu = (event) => {
     event.preventDefault();
     setAnchorEl(event.currentTarget);
-//    setOpen(Boolean(event.currentTarget));
   };
 
   const handleClick = event => {

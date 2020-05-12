@@ -125,6 +125,15 @@ export default class BulletComposer extends React.Component {
 
   handleEditorChange(editorState) {
     this.setState({editorState});
+    let text = editorState.getCurrentContent().getPlainText();
+    console.log(text);
+    let selectionstate = editorState.getSelection();
+    let hasFocus = selectionstate.getHasFocus();
+    let anchorKey = selectionstate.getAnchorKey();
+    let anchor = selectionstate.getAnchorOffset();
+    let focusKey = selectionstate.getFocusKey();
+    let focus = selectionstate.getFocusOffset();
+    console.log(hasFocus, anchorKey, anchor, focusKey, focus);
   };
 
   handleContentChange(contentState) {
@@ -133,8 +142,8 @@ export default class BulletComposer extends React.Component {
       editorState,
       contentState
     );
-    console.log(contentState.getPlainText());
-    this.handleEditorChange(newEditorState);
+    let newNewEditorState = EditorState.moveFocusToEnd(newEditorState);
+    this.handleEditorChange(newNewEditorState);
   };
 
   handleWidthMeasurement(key, width) {

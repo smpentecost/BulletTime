@@ -3,7 +3,7 @@ import { EditorBlock } from 'draft-js';
 export default function Bullet(props) {
   return (
     <>
-      <span>
+      <span contentEditable={false}>
         {'- '}
       </span>
       <EditorBlock  {...props}/>

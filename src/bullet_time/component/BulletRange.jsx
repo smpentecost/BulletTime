@@ -53,6 +53,7 @@ export default function BulletRange(props) {
     <Paper elevation={6}>
       <div className="guided-range">
         <div className={`bullet-range ${props.disabled ? "disabled" : ""}`}>
+          {console.log('editor')}
            <Editor
              editorState={props.editorState}
              readOnly={props.disabled}
