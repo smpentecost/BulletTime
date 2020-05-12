@@ -63,8 +63,9 @@ export default function  AcronymDecorator(props) {
   };
 
   const renderMenuOptions = () => {
+    const key = props.decoratedText.replace(/\s/g, ' ');
     let itemRenders = [];
-    for (const item of getMenuOptions(db, props.decoratedText)) {
+    for (const item of getMenuOptions(db, key)) {
       itemRenders.push(
         <ListItem button
                   key={item}
