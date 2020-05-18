@@ -1,6 +1,6 @@
 * Bullet Time
 
-Bullet Time was created to help cut down on the monotony that often comes with writing performance reviews and awards packages in the Air Force. For you non-AF folks,this tool will probably work for you too, with some adjustment.
+[[https://smpentecost.github.io/BulletTime][Bullet Time]] was created to help cut down on the monotony that often comes with writing performance reviews and awards packages in the Air Force. For you non-AF folks,this tool will probably work for you too, with some adjustment.
 
 The application is (obviously) web-based and runs entirely in your browser (no-backend), es evidenced by its successful hosting on GitHub Pages. The core functionality is provided using custom [[https://reactjs.org/][React-JS]] components and a [[https://draftjs.org/][Draft-Js]] editor component. This offers several advantages:
 
