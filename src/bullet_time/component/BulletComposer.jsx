@@ -55,6 +55,8 @@ export default class BulletComposer extends React.Component {
       guide: this.GUIDE_DEFAULT, //px
       regexp: this.props.regexp,
     };
+
+    this.cachedSelection = null;
   }
 
   renderRulers() {
@@ -124,9 +126,7 @@ export default class BulletComposer extends React.Component {
   }
 
   handleEditorChange(editorState) {
-    this.setState({editorState});
     let text = editorState.getCurrentContent().getPlainText();
-    console.log(text);
     let selectionstate = editorState.getSelection();
     let hasFocus = selectionstate.getHasFocus();
     let anchorKey = selectionstate.getAnchorKey();
@@ -134,16 +134,29 @@ export default class BulletComposer extends React.Component {
     let focusKey = selectionstate.getFocusKey();
     let focus = selectionstate.getFocusOffset();
     console.log(hasFocus, anchorKey, anchor, focusKey, focus);
+    // if (!anchor && this.cachedSelection) {
+    //   let newEditorState = EditorState.forceSelection(
+    //     editorState,
+    //     this.cachedSelection
+    //   );
+    //   this.cachedSelection = null;
+    //   this.setState({editorState: newEditorState});
+      
+    // } else {
+      this.setState({editorState});
+//    }
   };
 
   handleContentChange(contentState) {
     const editorState = this.state.editorState;
+    if (!this.cachedSelection) {
+      this.cachedSelection = editorState.getSelection();
+    }
     const newEditorState = EditorState.push(
       editorState,
       contentState
     );
-    let newNewEditorState = EditorState.moveFocusToEnd(newEditorState);
-    this.handleEditorChange(newNewEditorState);
+    this.handleEditorChange(newEditorState);
   };
 
   handleWidthMeasurement(key, width) {

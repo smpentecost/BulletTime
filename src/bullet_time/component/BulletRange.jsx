@@ -27,6 +27,14 @@ function bulletBlockStyle(contentBlock) {
 
 export default function BulletRange(props) {
 
+  const handleFocus = () => {
+    console.log('focus');
+    const editorState = props.editorState;
+    const newEditorState = EditorState.moveFocusToEnd(editorState);
+    props.onChange(newEditorState);
+  };
+    
+
   const handleNewBullet = () => {
     const editorState = props.editorState;
     const newBlock = new ContentBlock({
@@ -53,13 +61,14 @@ export default function BulletRange(props) {
     <Paper elevation={6}>
       <div className="guided-range">
         <div className={`bullet-range ${props.disabled ? "disabled" : ""}`}>
-          {console.log('editor')}
            <Editor
              editorState={props.editorState}
              readOnly={props.disabled}
              onChange={editorState => props.onChange(editorState)}
              blockRendererFn={bulletRenderer}
              blockStyleFn={bulletBlockStyle}
+             onBlur={() => console.log('blur')}
+             onFocus={handleFocus}
            />
           <div
             id="tail"

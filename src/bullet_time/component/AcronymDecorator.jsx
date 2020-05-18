@@ -97,11 +97,11 @@ export default function  AcronymDecorator(props) {
       >
         {renderMenuOptions()}
       </Popover>
-      <span className="acronym" onContextMenu={handleContextMenu}>
+      <span className="acronym"
+            onContextMenu={handleContextMenu}
+      >
         {props.children}
       </span>
     </>
   );
 };
-
-
