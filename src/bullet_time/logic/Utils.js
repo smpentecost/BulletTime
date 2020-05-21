@@ -11,7 +11,7 @@ export function findWithRegex(regex, contentBlock, callback) {
 }
 
 export function getMenuOptions(db, key){
-  let arg = key.replace(/\s/g, ' ').replace(/'/g, "''")
+  let arg = key.replace(/\s/g, ' ').replace(/'/g, "''").replace(/%/g, "[%]")
   console.log(arg)
   let result = db.exec(
     "SELECT pair_id FROM words WHERE word LIKE '" + arg + "';"
