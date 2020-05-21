@@ -11,9 +11,10 @@ export function findWithRegex(regex, contentBlock, callback) {
 }
 
 export function getMenuOptions(db, key){
+  let arg = key.replace(/\s/g, ' ').replace(/'/g, "''")
+  console.log(arg)
   let result = db.exec(
-    "SELECT pair_id FROM words WHERE word LIKE '" +
-      key.replace(/\s/g, ' ') + "';"
+    "SELECT pair_id FROM words WHERE word LIKE '" + arg + "';"
   );
   let pair_id = null;
   let items = [];
