@@ -7,6 +7,7 @@ import { Grid } from '@material-ui/core';
 // Components
 import AppBar from './component/AppBar';
 import BulletComposer from './component/BulletComposer';
+import Welcome from './component/Welcome';
 
 // Data
 import AcronymList from './data/acronyms.sqlite';
@@ -80,6 +81,7 @@ export default class BulletTime extends React.Component {
   render() {
     return (
       <ThemeProvider theme={theme}>
+        <Welcome/>
         <Grid
           container
           direction="column"
