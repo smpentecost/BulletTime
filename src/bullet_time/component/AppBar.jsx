@@ -7,7 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
+
 import Drawer from './Drawer';
+import PageDialog from './PageDialog';
+
+import { About, License } from '../data/DialogContent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,6 +28,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ButtonAppBar() {
   const classes = useStyles();
   const [state, setState] = React.useState({open_drawer: false});
+  const [dialogOpen, setDialogOpen] = React.useState(true);
+  const [dialog, setDialog] = React.useState(About());
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -33,6 +39,18 @@ export default function ButtonAppBar() {
     setState({ ...state, open_drawer: open});
   };
 
+  const handleDialog = (dialogOpen) => {
+    setDialogOpen(dialogOpen);
+  };
+
+  const setDialogContent = (dialog) => {
+    setDialog(dialog);
+  };
+
+  const viewLicense = () => {
+    setDialogContent(License());
+    handleDialog(true);
+  };
 
   return (
     <div className={classes.root}>
@@ -55,9 +73,17 @@ export default function ButtonAppBar() {
           </Typography>
         </Toolbar>
       </AppBar>
+      <PageDialog
+          open={dialogOpen}
+          title={dialog[0]}
+          content={dialog[1]}
+          handleDialog={dialogOpen => handleDialog(dialogOpen)}
+        />
       <Drawer
         toggleDrawer={() => toggleDrawer()}
-        open={state["open_drawer"]}/>
+        open={state["open_drawer"]}
+        viewLicense={viewLicense}
+      />
     </div>
   );
 }
