@@ -1,4 +1,4 @@
-export function  graberSpace(bullet, width, guide) {
+export function  graberSpace(bullet, width, guide, lastOp) {
   /*
     The best way to do this is recursively, changing a single
     character at once and checking length as we go. That is because
@@ -15,8 +15,10 @@ export function  graberSpace(bullet, width, guide) {
 
   const promote = (ranks) => {
     let newRanks = ranks;
-    var indexOfMinValue = ranks.slice().reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 0);
+    // promote left to right
+    let indexOfMinValue = ranks.reduce((iMin, x, i, arr) => x < arr[iMin] ? i : iMin, 4);
     newRanks[indexOfMinValue]++;
+    // Don't promote past max rank
     if (newRanks[indexOfMinValue] > 4) {
       newRanks[indexOfMinValue] = 4;
     }
@@ -25,9 +27,10 @@ export function  graberSpace(bullet, width, guide) {
 
   const demote = (ranks) => {
     let newRanks = ranks;
-    // Intentionally slicing so that we don't change the first space
-    var indexOfMaxValue = ranks.slice(1).reduce((iMax, x, i, arr) => x > arr[iMax] ? i : iMax, 0) + 1;
+    // demote right to left
+    let indexOfMaxValue = ranks.reduce((iMax, x, i, arr) => x >= arr[iMax] ? i : iMax, 0);
     newRanks[indexOfMaxValue]--;
+    // Don't demote below min rank
     if (newRanks[indexOfMaxValue] < 0) {
       newRanks[indexOfMaxValue] = 0;
     }
@@ -49,7 +52,7 @@ export function  graberSpace(bullet, width, guide) {
 
   let spaces = [];
   let ranks = [];
-  let bulletArray = bullet.split("");
+  let bulletArray = bullet.split('');
   
   //Find all the white space character indexes
   let position = bulletArray.findIndex(isWhiteSpace);
@@ -64,21 +67,25 @@ export function  graberSpace(bullet, width, guide) {
     }
   }
 
+  let Op = null;
   if (width > guide-1) {
     ranks = demote(ranks);
+    Op = 'demote';
   } else if (width < guide-1) {
-    ranks = promote(ranks);
+    if (!lastOp || lastOp === 'promote'){
+      ranks = promote(ranks);
+      Op = 'promote';
+    } else {
+      Op = null;
+    }
   }
 
-    // console.log(ranks);
-  // console.log(width);
-
-    spaces.forEach((position, index) => {
-      bulletArray[position] = rank[ranks[index]];
-    });
+  spaces.forEach((position, index) => {
+    bulletArray[position] = rank[ranks[index]];
+  });
 
   let newBullet = bulletArray.join('');
   let finished = (newBullet === bullet);
 
-  return [newBullet, finished];
+  return [newBullet, finished, Op];
 }

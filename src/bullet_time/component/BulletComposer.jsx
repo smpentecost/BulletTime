@@ -54,11 +54,9 @@ export default class BulletComposer extends React.Component {
       graberized: false,
       guide: this.GUIDE_DEFAULT, //px
       regexp: this.props.regexp,
-      replacement: false
     };
 
     this.editorRef = React.createRef();
-    this.cachedSelection = null;
   }
 
   renderRulers() {
@@ -89,15 +87,18 @@ export default class BulletComposer extends React.Component {
       const key = entry[0];
       const width = entry[1][0];
       const finished = entry[1][1];
+      const lastOp = entry[1][2];
       const block = content.getBlockForKey(key);
       if (block) {
         if (!finished || forceReview) {
+          let newWidth = 0;
           let result = [];
           if (graberize) {
             const guide = this.state.guide;
-            result = graberSpace(block.getText(), width, guide);
+            result = graberSpace(block.getText(), width, guide, lastOp);
+            newWidth = width;
           } else {
-            result = [block.getText().replace(/[\u2004\u2006\u2007\u2009]/g,' '), true];
+            result = [block.getText().replace(/[\u2004\u2006\u2007\u2009]/g,' '), true, null];
           }
           const newBlock = new ContentBlock({
             text: result[0],
@@ -106,7 +107,7 @@ export default class BulletComposer extends React.Component {
           });
           
           blockMap = blockMap.set(key, newBlock);
-          bulletWidths.set(key, [width, result[1]]);
+          bulletWidths.set(key, [newWidth, result[1], result[2]]);
         }
       } else {
         bulletWidths.delete(key);
@@ -128,26 +129,11 @@ export default class BulletComposer extends React.Component {
   }
 
   handleEditorChange(editorState, cb=null) {
-    console.log(editorState.getSelection().serialize());
     this.setState({editorState}, cb);
-    // if (!anchor && this.cachedSelection) {
-    //   let newEditorState = EditorState.forceSelection(
-    //     editorState,
-    //     this.cachedSelection
-    //   );
-    //   this.cachedSelection = null;
-    //   this.setState({editorState: newEditorState});
-      
-    // } else {
-
-//    }
   };
 
   handleContentChange(contentState) {
     const editorState = this.state.editorState;
-    // if (!this.cachedSelection) {
-    //   this.cachedSelection = editorState.getSelection();
-    // }
     let newEditorState = EditorState.createWithContent(
       contentState,
       this.compositeDecorator
@@ -160,8 +146,13 @@ export default class BulletComposer extends React.Component {
 
   handleWidthMeasurement(key, width) {
     let bulletWidths = this.state.bulletWidths;
+    let metadata = bulletWidths.get(key);
+    let lastOp = null;
+    if (metadata) {
+      lastOp = metadata[2];
+    }
     const guide = this.state.guide;
-    bulletWidths.set(key, [width, !(width-guide)]);
+    bulletWidths.set(key, [width, !(width-guide), lastOp]);
     this.setState({bulletWidths});
     this.graberizeContent();
   }
@@ -179,12 +170,10 @@ export default class BulletComposer extends React.Component {
           <Grid item xs>
             <BulletRange
               ref={this.editorRef}
-              replacementFlag={this.state.replacement}
               editorState={this.state.editorState}
               guide={this.state.guide}
               disabled={this.state.graberized}
               onChange={editorState => this.handleEditorChange(editorState)}
-              onWidthMeasurement={(key, width) => this.handleWidthMeasurement(key, width)}
             />
           </Grid>
           <Grid item>
