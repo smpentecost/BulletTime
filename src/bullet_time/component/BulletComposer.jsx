@@ -13,7 +13,7 @@ import { CompositeDecorator,
 //Components
 import AcronymDecorator from './AcronymDecorator';
 import BulletMenu from './BulletMenu';
-import BulletRange from './BulletRange';
+import { BulletRange } from './BulletRange';
 import Ruler from './Ruler';
 
 //Logic
@@ -36,7 +36,7 @@ export default class BulletComposer extends React.Component {
       findWithRegex(props.regexp, contentBlock, callback);
     };
 
-    const compositeDecorator = new CompositeDecorator([
+    this.compositeDecorator = new CompositeDecorator([
       {
         strategy:acronymStrategy,
         component:AcronymDecorator,
@@ -49,13 +49,15 @@ export default class BulletComposer extends React.Component {
     ]);
 
     this.state = {
-      editorState: EditorState.createEmpty(compositeDecorator),
+      editorState: EditorState.createEmpty(this.compositeDecorator),
       bulletWidths: new Map(),
       graberized: false,
       guide: this.GUIDE_DEFAULT, //px
       regexp: this.props.regexp,
+      replacement: false
     };
 
+    this.editorRef = React.createRef();
     this.cachedSelection = null;
   }
 
@@ -125,15 +127,9 @@ export default class BulletComposer extends React.Component {
     this.setState({graberized: graberize}, () => this.graberizeContent(true));
   }
 
-  handleEditorChange(editorState) {
-    let text = editorState.getCurrentContent().getPlainText();
-    let selectionstate = editorState.getSelection();
-    let hasFocus = selectionstate.getHasFocus();
-    let anchorKey = selectionstate.getAnchorKey();
-    let anchor = selectionstate.getAnchorOffset();
-    let focusKey = selectionstate.getFocusKey();
-    let focus = selectionstate.getFocusOffset();
-    console.log(hasFocus, anchorKey, anchor, focusKey, focus);
+  handleEditorChange(editorState, cb=null) {
+    console.log(editorState.getSelection().serialize());
+    this.setState({editorState}, cb);
     // if (!anchor && this.cachedSelection) {
     //   let newEditorState = EditorState.forceSelection(
     //     editorState,
@@ -143,20 +139,23 @@ export default class BulletComposer extends React.Component {
     //   this.setState({editorState: newEditorState});
       
     // } else {
-      this.setState({editorState});
+
 //    }
   };
 
   handleContentChange(contentState) {
     const editorState = this.state.editorState;
-    if (!this.cachedSelection) {
-      this.cachedSelection = editorState.getSelection();
-    }
-    const newEditorState = EditorState.push(
-      editorState,
-      contentState
+    // if (!this.cachedSelection) {
+    //   this.cachedSelection = editorState.getSelection();
+    // }
+    let newEditorState = EditorState.createWithContent(
+      contentState,
+      this.compositeDecorator
     );
-    this.handleEditorChange(newEditorState);
+    const cb = () => {
+      this.editorRef.current.blur();
+    };
+    this.handleEditorChange(newEditorState, cb);
   };
 
   handleWidthMeasurement(key, width) {
@@ -179,6 +178,8 @@ export default class BulletComposer extends React.Component {
         <Grid container spacing={1}>
           <Grid item xs>
             <BulletRange
+              ref={this.editorRef}
+              replacementFlag={this.state.replacement}
               editorState={this.state.editorState}
               guide={this.state.guide}
               disabled={this.state.graberized}

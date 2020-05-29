@@ -60,6 +60,7 @@ export default class BulletTime extends React.Component {
     let db = this.state.acronymDb;
     let result = db.exec("SELECT word FROM words;")[0].values;
     result = result.sort((a, b) => {return b[0].length-a[0].length;});
+    result = result.filter(x => x[0].length > 1);
   
     let regexp_def = "\\b(" + result.join("|").replace(/[\\[.+*?%&(){^$]/g, "\\$&") + ")(?=([\\s;\\.]|$))";
     regexp_def = regexp_def.replace(/\s/g, "\\s"); //Enable matches even after graberizing

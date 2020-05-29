@@ -1,5 +1,6 @@
 // 3rd party imports
 import React from 'react';
+import { useRef } from 'react';
 import { ContentBlock,
          ContentState,
          Editor,
@@ -25,15 +26,7 @@ function bulletBlockStyle(contentBlock) {
   return 'bullet-block';
 }
 
-export default function BulletRange(props) {
-
-  const handleFocus = () => {
-    console.log('focus');
-    const editorState = props.editorState;
-    const newEditorState = EditorState.moveFocusToEnd(editorState);
-    props.onChange(newEditorState);
-  };
-    
+export const BulletRange = React.forwardRef((props, ref) => {
 
   const handleNewBullet = () => {
     const editorState = props.editorState;
@@ -61,15 +54,14 @@ export default function BulletRange(props) {
     <Paper elevation={6}>
       <div className="guided-range">
         <div className={`bullet-range ${props.disabled ? "disabled" : ""}`}>
-           <Editor
-             editorState={props.editorState}
-             readOnly={props.disabled}
-             onChange={editorState => props.onChange(editorState)}
-             blockRendererFn={bulletRenderer}
-             blockStyleFn={bulletBlockStyle}
-             onBlur={() => console.log('blur')}
-             onFocus={handleFocus}
-           />
+          <Editor
+            ref = {ref}
+            editorState={props.editorState}
+            readOnly={props.disabled}
+            onChange={editorState => props.onChange(editorState)}
+            blockRendererFn={bulletRenderer}
+            blockStyleFn={bulletBlockStyle}
+          />
           <div
             id="tail"
             onClick={handleNewBullet}
@@ -81,5 +73,5 @@ export default function BulletRange(props) {
       </div>
     </Paper>
   );
-}
+});
 
