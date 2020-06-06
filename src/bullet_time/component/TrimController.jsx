@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Container, Grid, IconButton, InputAdornment, TextField } from '@material-ui/core';
+import { Button, ButtonGroup, Container, Grid, IconButton, InputAdornment, TextField } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Trim(props) {
   const classes = useStyles();
+  const awardTrim = 0;
+  const oprTrim = -3;
   const [state, setState] = React.useState({trim: 0});
 
   const onTrim = (arg) => (event) => {
@@ -25,6 +27,9 @@ export default function Trim(props) {
       }
       setState({trim: trim});
       props.onTrim(trim);
+    } else if (typeof arg ==="number") {
+      setState({trim: arg});
+      props.onTrim(arg);
     } else {
       let input = event.target.value;
       if (re.test(input)) {
@@ -39,48 +44,68 @@ export default function Trim(props) {
   };
 
   return(
-    <Grid
-      container
-      alignItems="center"
-      className={classes.root}
-    >
-      <Grid item>
-        <IconButton
-          color="secondary"
-          onClick={onTrim("left")}
-        >
-          <ChevronLeft
-            color="primary"
-          ></ChevronLeft>
-        </IconButton>
+    <>
+      <Grid
+        justify="center"
+        alignItems="center" container
+      >
+        <ButtonGroup style={{ padding:'10px' }} color="primary" aria-label="outlined primary button group">
+          <Button color={state['trim']==awardTrim?'':'secondary'}
+                  onClick={onTrim(awardTrim)}
+          >
+            AWD/EPR
+          </Button>
+          <Button color={state['trim']==oprTrim?'':'secondary'}
+                  onClick={onTrim(oprTrim)}
+          >
+            OPR
+          </Button>
+        </ButtonGroup>
       </Grid>
-      <Grid item>
-        <TextField
-          style={{width: 80}}
-          value={state.trim}
-          size="small"
-          label="Trim"
-          variant="outlined"
-          color="secondary"
-          onChange={onTrim()}
-          onBlur={(event) => (
-            event.target.value === "" || event.target.value === "-" ? setState({trim: 0}):0
-          )}
-          InputProps={{
-            endAdornment: <InputAdornment position="end">px</InputAdornment>,
-          }}
-        />
+      <Grid
+        container
+        alignItems="center"
+        className={classes.root}
+      >
+        <Grid item>
+          <IconButton
+            color="secondary"
+            onClick={onTrim("left")}
+          >
+            <ChevronLeft
+              color="primary"
+            ></ChevronLeft>
+          </IconButton>
+        </Grid>
+        <Grid item>
+          <TextField
+            style={{width: 80}}
+            value={state.trim}
+            size="small"
+            label="Trim"
+            variant="outlined"
+            color="secondary"
+            onChange={onTrim()}
+            onBlur={(event) => (
+              event.target.value === "" || event.target.value === "-" ? setState({trim: 0}):0
+            )}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <IconButton
+            color="secondary"
+            onClick={onTrim("right")}
+          >
+            <ChevronRight
+              color="primary"
+            ></ChevronRight>
+          </IconButton>
+        </Grid>
       </Grid>
-      <Grid item>
-        <IconButton
-          color="secondary"
-          onClick={onTrim("right")}
-        >
-          <ChevronRight
-            color="primary"
-          ></ChevronRight>
-        </IconButton>
-      </Grid>
-    </Grid>
+    </>
+
   );
 }

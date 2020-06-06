@@ -178,6 +178,7 @@ export default class BulletComposer extends React.Component {
           </Grid>
           <Grid item>
             <BulletMenu
+              guide={this.state.guide}
               graberized={this.state.graberized}
               onGraberize={() => this.handleGraberize()}
               onTrim={(arg) => this.handleTrim(arg)}
