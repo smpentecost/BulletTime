@@ -34,7 +34,7 @@ import { AppBar,
          Toolbar,
          Typography } from '@material-ui/core';
 
-const checkThesaurus = false;
+const checkThesaurus = true;
 
 export default class SynonymViewer extends React.Component{
 
@@ -64,7 +64,7 @@ export default class SynonymViewer extends React.Component{
         }
       }
     };
-    const maxWords=50;
+    const maxWords=25;
     xhttp.open("GET","https://api.datamuse.com/words?max="+ maxWords + "&ml=" + this.state.word, true);
     xhttp.send();
   }
@@ -76,7 +76,6 @@ export default class SynonymViewer extends React.Component{
 
   handleValueChange(event){
     let word = event.currentTarget.value;
-    console.log(word);
     this.setState({word}, this.getSynonyms);
   }
 
@@ -86,13 +85,32 @@ export default class SynonymViewer extends React.Component{
   }
 
   render(){
-    const synonyms =  <SynonymList
-                        synonyms={this.state.synonyms}
-                        onClick={event => this.handleSynonymClick(event)}
-                      />;
-    let mainBody = '';
-    if(this.state.synonyms.length == 0){
-      mainBody = <a>no results found...</a>;
+    const synonyms = <Card variant="outlined"
+                           style={{maxHeight: "210px"}}
+                     >
+                       <CardContent
+                         style={{columnCount: 6, maxHeight: "210px"}}>
+                         <SynonymList
+                           synonyms={this.state.synonyms}
+                           onClick={event => this.handleSynonymClick(event)}
+                         />
+                       </CardContent>
+                     </Card>;
+
+    const noResult =<Card variant="outlined"
+                           style={{maxHeight: "210px"}}
+                     >
+                       <CardContent
+                         style={{columnCount: 6, maxHeight: "210px"}}>
+                         <a>No results...</a>
+                       </CardContent>
+                     </Card>;
+
+    let mainBody;
+    if(this.state.word == ''){
+      mainBody = '';
+    }else if(this.state.synonyms.length == 0){
+      mainBody = noResult;
     }else{
       mainBody = synonyms;
     }
@@ -127,14 +145,7 @@ export default class SynonymViewer extends React.Component{
             />
           </Grid>
           <Grid item>
-            <Card variant="outlined"
-      style={{maxHeight: "200px"}}
-            >
-              <CardContent
-                style={{columnCount: 6}}>
-                {mainBody}
-              </CardContent>
-            </Card>
+            {mainBody}
           </Grid>
           <Grid item>
             <Typography
@@ -242,8 +253,9 @@ class Synonym extends React.Component{
     }
     return(
       <Button
-        contained="light"
-        variant='contained'
+        style={{color: '#000000'}}
+        color='secondary'
+        variant='outlined'
         size='small'
         onClick={event => this.props.onClick(event)}>
           {this.props.word}
