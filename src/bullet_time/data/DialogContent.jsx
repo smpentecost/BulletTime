@@ -15,6 +15,10 @@ export const About = () => {
         <Typography gutterBottom>
           <h4>Acronym/Abbreviation Replacement</h4>
         Bullet Time supports acronym/abbreviation recognition and replacement. As you write your bullet, if a word is <span className="acronym">highlighted green</span> you can right click it to get a list of approved replacements. Note: The list of approved replacements is not currently customizable but that feature is in the works.
+        </Typography>
+        <Typography gutterBottom>
+          <h4>Datamuse Powered Thesaurus</h4>
+          Bullet Time includes a thesaurus component powered by the <a href="https://www.datamuse.com/api/">Datamuse</a> API. Results are displayed based on datamuse's scoring algorithm. Unfortunately, the score given to each word isn't particularly meaningful for anything but ranking relevance. Clicking on a result will make it the new search term, allowing you to quickly find the right word for whatever you want your bullet to say.
       </Typography>
     </>
   );

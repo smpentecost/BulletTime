@@ -49,7 +49,11 @@ export default function PageDialog(props) {
 
   return (
     <div>
-      <Dialog onClose={handleClose} aria-labelledby="customized-dialog-title" open={props.open}>
+      <Dialog onClose={handleClose}
+              aria-labelledby="customized-dialog-title"
+              open={props.open}
+              maxWidth='md'
+      >
         <DialogTitle id="customized-dialog-title" onClose={handleClose}>
           {props.title}
         </DialogTitle>
