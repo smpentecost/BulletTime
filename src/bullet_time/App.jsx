@@ -7,6 +7,7 @@ import { Grid } from '@material-ui/core';
 // Components
 import AppBar from './component/AppBar';
 import BulletComposer from './component/BulletComposer';
+import Thesaurus from './component/Thesaurus';
 
 // Data
 import AcronymList from './data/acronyms.sqlite';
@@ -20,6 +21,7 @@ const theme = createMuiTheme({
       main: '#0d0811',
     },
     secondary: {
+      light: '#d7ff86',
       main: '#08ff11',
     },
   },
@@ -91,6 +93,9 @@ export default class BulletTime extends React.Component {
           </Grid>
           <Grid item>
             {this.renderComposer()}
+          </Grid>
+          <Grid item>
+            <Thesaurus/>
           </Grid>
         </Grid>
       </ThemeProvider>

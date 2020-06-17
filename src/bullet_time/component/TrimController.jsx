@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Trim(props) {
   const classes = useStyles();
   const awardTrim = 0;
-  const oprTrim = -3;
+  const oprTrim = -5;
   const [state, setState] = React.useState({trim: 0});
 
   const onTrim = (arg) => (event) => {
