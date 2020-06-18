@@ -26,9 +26,6 @@ import { findWithRegex } from '../logic/Utils.js';
  * ignoring the header and app drawer.
  */
 export default class BulletComposer extends React.Component {
-
-  GUIDE_DEFAULT = 763;
-
   constructor(props) {
     super(props);
 
@@ -49,10 +46,10 @@ export default class BulletComposer extends React.Component {
     ]);
 
     this.state = {
-      editorState: EditorState.createEmpty(this.compositeDecorator),
-      bulletWidths: new Map(),
+      // editorState: EditorState.createEmpty(this.compositeDecorator),
+      // bulletWidths: new Map(),
       graberized: false,
-      guide: this.GUIDE_DEFAULT, //px
+      // guide: this.GUIDE_DEFAULT, //px
       regexp: this.props.regexp,
     };
 

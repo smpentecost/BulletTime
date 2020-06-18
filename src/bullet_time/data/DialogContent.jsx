@@ -18,7 +18,7 @@ export const About = () => {
         </Typography>
         <Typography gutterBottom>
           <h4>Datamuse Powered Thesaurus</h4>
-          Bullet Time includes a thesaurus component powered by the <a href="https://www.datamuse.com/api/">Datamuse</a> API. Results are displayed based on datamuse's scoring algorithm. Unfortunately, the score given to each word isn't particularly meaningful for anything but ranking relevance. Clicking on a result will make it the new search term, allowing you to quickly find the right word for whatever you want your bullet to say.
+          Bullet Time includes a thesaurus component powered by the <a href="https://www.datamuse.com/api/" target="_blank">Datamuse</a> API. Results are displayed based on datamuse's scoring algorithm. Unfortunately, the score given to each word isn't particularly meaningful for anything but ranking relevance. Clicking on a result will make it the new search term, allowing you to quickly find the right word for whatever you want your bullet to say.
       </Typography>
     </>
   );

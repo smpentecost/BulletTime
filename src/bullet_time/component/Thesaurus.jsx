@@ -153,7 +153,7 @@ export default class SynonymViewer extends React.Component{
               gutterBottom
               align='right'
             >
-              Powered by <a href="https://www.datamuse.com/api/">Datamuse</a>.
+              Powered by <a href="https://www.datamuse.com/api/" target="_blank">Datamuse</a>.
             </Typography>
           </Grid>
         </Grid>

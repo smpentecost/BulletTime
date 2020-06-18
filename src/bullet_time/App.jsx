@@ -3,6 +3,8 @@ import initSqlJs from "sql.js";
 import { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
+import { EditorState } from 'draft-js';
+
 
 // Components
 import AppBar from './component/AppBar';
@@ -28,12 +30,21 @@ const theme = createMuiTheme({
 });
       
 export default class BulletTime extends React.Component {
+
+  GUIDE_DEFAULT = 763;
+  
   constructor(props) {
     super(props);
     this.state = {
       acronymDb: null,
       err: null,
       acronymRegExp: null,
+      autosave: null,
+      editorState: EditorState.createEmpty(this.compositeDecorator),
+      bulletWidths: new Map(),
+      guide: this.GUIDE_DEFAULT, //px
+      regexp: this.props.regexp,
+
     };
   }
 
@@ -56,6 +67,17 @@ export default class BulletTime extends React.Component {
         xhr.send();
       })
       .catch(err => this.setState({ err }));
+
+    let savedSettings;
+
+    savedSettings = localStorage.getItem('bullets');
+    if(savedSettings){
+      console.log(savedSettings);
+      this.setState({"autosave": true});
+    }else{
+      localStorage.setItem('bullets', true);
+      this.setState({"autosave": false});
+    }
   }
 
   getRegExp() {
@@ -77,8 +99,20 @@ export default class BulletTime extends React.Component {
     return <BulletComposer
              regexp={this.state.acronymRegExp}
              db={this.state.acronymDb}
+             editorState={this.state.editorState}
+             bulletWidths={this.state.bulletWidths}
+             guide={this.state.guide}
            />;
   }
+
+  handleAutosave() {
+    const autosave = this.state.autosave;
+    this.setState({autosave: !autosave});
+  };
+
+  handleEditorChange(editorState, cb=null) {
+    this.setState({editorState}, cb);
+  };
   
   render() {
     return (
@@ -89,7 +123,10 @@ export default class BulletTime extends React.Component {
           spacing={1}
         >
           <Grid item>
-            <AppBar />
+            <AppBar
+              autosave={this.state.autosave}
+              handleAutosave={() => this.handleAutosave()}
+            />
           </Grid>
           <Grid item>
             {this.renderComposer()}

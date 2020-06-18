@@ -10,6 +10,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import Drawer from './Drawer';
 import PageDialog from './PageDialog';
+import StateSaver from './StateSaver';
 
 import { About, License } from '../data/DialogContent';
 
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar(props) {
   const classes = useStyles();
   const [state, setState] = React.useState({open_drawer: false});
   const [dialogOpen, setDialogOpen] = React.useState(true);
@@ -71,6 +72,10 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             Bullet Time
           </Typography>
+          <StateSaver
+            autosave={props.autosave}
+            handleClick={() => props.handleAutosave()}
+          />
         </Toolbar>
       </AppBar>
       <PageDialog
