@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, ButtonGroup, Container, Grid, IconButton, InputAdornment, TextField } from '@material-ui/core';
+import { Button, ButtonGroup, Grid, IconButton, InputAdornment, TextField } from '@material-ui/core';
 import { ChevronLeft, ChevronRight } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
@@ -14,7 +14,7 @@ export default function Trim(props) {
   const classes = useStyles();
   const awardTrim = 0;
   const oprTrim = -5;
-  const [state, setState] = React.useState({trim: 0});
+  const [state, setState] = React.useState({trim: props.guide-763});
 
   const onTrim = (arg) => (event) => {
     const re = /^-?[0-9]*$/;
@@ -50,12 +50,12 @@ export default function Trim(props) {
         alignItems="center" container
       >
         <ButtonGroup style={{ padding:'10px' }} color="primary" aria-label="outlined primary button group">
-          <Button color={state['trim']==awardTrim?'':'secondary'}
+          <Button color={state['trim']===awardTrim?'':'secondary'}
                   onClick={onTrim(awardTrim)}
           >
             AWD/EPR
           </Button>
-          <Button color={state['trim']==oprTrim?'':'secondary'}
+          <Button color={state['trim']===oprTrim?'':'secondary'}
                   onClick={onTrim(oprTrim)}
           >
             OPR

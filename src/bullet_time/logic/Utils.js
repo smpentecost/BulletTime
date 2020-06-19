@@ -1,5 +1,3 @@
-import initSqlJs from "sql.js";
-
 export function findWithRegex(regex, contentBlock, callback) {
     const text = contentBlock.getText();
     let matchArr, start, end;

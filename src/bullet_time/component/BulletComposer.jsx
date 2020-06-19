@@ -5,9 +5,6 @@ import { CompositeDecorator,
          ContentBlock,
          ContentState,
          EditorState,
-         Modifier,
-         SelectionState,
-         genKey
        } from 'draft-js';
 
 //Components
@@ -45,11 +42,16 @@ export default class BulletComposer extends React.Component {
       },
     ]);
 
+    const editorState = this.props.editorState;
+    this.props.handleEditorChange(
+      EditorState.set(
+        editorState,
+        {decorator: this.compositeDecorator}
+      )
+    );
+
     this.state = {
-      // editorState: EditorState.createEmpty(this.compositeDecorator),
-      // bulletWidths: new Map(),
       graberized: false,
-      // guide: this.GUIDE_DEFAULT, //px
       regexp: this.props.regexp,
     };
 
@@ -58,7 +60,7 @@ export default class BulletComposer extends React.Component {
 
   renderRulers() {
     let rulers = [];
-    const blockArray = this.state.editorState
+    const blockArray = this.props.editorState
           .getCurrentContent()
           .getBlocksAsArray();
 
@@ -76,10 +78,10 @@ export default class BulletComposer extends React.Component {
 
   graberizeContent(forceReview=false) {
     const graberize = this.state.graberized;
-    let editorState = this.state.editorState;
+    let editorState = this.props.editorState;
     let content = editorState.getCurrentContent();
     let blockMap = content.getBlockMap(); //resetting
-    let bulletWidths = this.state.bulletWidths;
+    let bulletWidths = this.props.bulletWidths;
     for (const entry of bulletWidths.entries()) {
       const key = entry[0];
       const width = entry[1][0];
@@ -91,7 +93,7 @@ export default class BulletComposer extends React.Component {
           let newWidth = 0;
           let result = [];
           if (graberize) {
-            const guide = this.state.guide;
+            const guide = this.props.guide;
             result = graberSpace(block.getText(), width, guide, lastOp);
             newWidth = width;
           } else {
@@ -116,8 +118,8 @@ export default class BulletComposer extends React.Component {
       newContentState,
       'insert-characters'
     );
-    this.setState({editorState: newEditorState,
-                   bulletWidths: bulletWidths});
+    this.props.handleEditorChange(newEditorState);
+    this.props.handleWidthChange(bulletWidths);
   }
 
   handleGraberize() {
@@ -125,12 +127,7 @@ export default class BulletComposer extends React.Component {
     this.setState({graberized: graberize}, () => this.graberizeContent(true));
   }
 
-  handleEditorChange(editorState, cb=null) {
-    this.setState({editorState}, cb);
-  };
-
   handleContentChange(contentState) {
-    const editorState = this.state.editorState;
     let newEditorState = EditorState.createWithContent(
       contentState,
       this.compositeDecorator
@@ -138,25 +135,25 @@ export default class BulletComposer extends React.Component {
     const cb = () => {
       this.editorRef.current.blur();
     };
-    this.handleEditorChange(newEditorState, cb);
+    this.props.handleEditorChange(newEditorState, cb);
   };
 
   handleWidthMeasurement(key, width) {
-    let bulletWidths = this.state.bulletWidths;
+    let bulletWidths = this.props.bulletWidths;
     let metadata = bulletWidths.get(key);
     let lastOp = null;
     if (metadata) {
       lastOp = metadata[2];
     }
-    const guide = this.state.guide;
+    const guide = this.props.guide;
     bulletWidths.set(key, [width, !(width-guide), lastOp]);
-    this.setState({bulletWidths});
+    this.props.handleWidthChange(bulletWidths);
     this.graberizeContent();
   }
 
   handleTrim(arg) {
-    const guide = this.GUIDE_DEFAULT + arg;
-    this.setState({guide});
+    const guide = this.props.GUIDE_DEFAULT + arg;
+    this.props.handleGuideChange(guide);
     this.graberizeContent(true);
   }
 
@@ -167,15 +164,15 @@ export default class BulletComposer extends React.Component {
           <Grid item xs>
             <BulletRange
               ref={this.editorRef}
-              editorState={this.state.editorState}
-              guide={this.state.guide}
+              editorState={this.props.editorState}
+              guide={this.props.guide}
               disabled={this.state.graberized}
-              onChange={editorState => this.handleEditorChange(editorState)}
+              onChange={editorState => this.props.handleEditorChange(editorState)}
             />
           </Grid>
           <Grid item>
             <BulletMenu
-              guide={this.state.guide}
+              guide={this.props.guide}
               graberized={this.state.graberized}
               onGraberize={() => this.handleGraberize()}
               onTrim={(arg) => this.handleTrim(arg)}

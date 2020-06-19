@@ -39,6 +39,7 @@ export default function BulletMenu(props) {
       >
         <Grid item>
           <TrimController
+            guide={props.guide}
             onTrim={(arg) => props.onTrim(arg)}
           />
           <Divider/>

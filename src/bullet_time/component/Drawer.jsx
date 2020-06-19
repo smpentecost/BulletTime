@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
@@ -19,7 +18,6 @@ const useStyles = makeStyles({
 
 export default function TemporaryDrawer(props) {
   const classes = useStyles();
-  const preventDefault = (event) => event.preventDefault();
 
   const list = () => (
     <div

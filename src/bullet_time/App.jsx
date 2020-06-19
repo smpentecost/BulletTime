@@ -1,9 +1,10 @@
 import React from 'react';
 import initSqlJs from "sql.js";
-import { useState } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
-import { EditorState } from 'draft-js';
+import { ContentState,
+         EditorState,
+       } from 'draft-js';
 
 
 // Components
@@ -35,16 +36,27 @@ export default class BulletTime extends React.Component {
   
   constructor(props) {
     super(props);
+
+    let guide = localStorage.getItem('guide');
+    if(!guide){
+      guide = this.GUIDE_DEFAULT;
+    }
+
+    let autosave = Boolean(localStorage.getItem('autosave'));
+
+    let bullets = JSON.parse(localStorage.getItem('bullets'));
+    if(!bullets){bullets='';};
+    let content = ContentState.createFromText(bullets);
+    
     this.state = {
       acronymDb: null,
       err: null,
       acronymRegExp: null,
-      autosave: null,
-      editorState: EditorState.createEmpty(this.compositeDecorator),
+      autosave: autosave,
+      editorState: EditorState.createWithContent(content),
       bulletWidths: new Map(),
-      guide: this.GUIDE_DEFAULT, //px
+      guide: guide, //px
       regexp: this.props.regexp,
-
     };
   }
 
@@ -67,17 +79,6 @@ export default class BulletTime extends React.Component {
         xhr.send();
       })
       .catch(err => this.setState({ err }));
-
-    let savedSettings;
-
-    savedSettings = localStorage.getItem('bullets');
-    if(savedSettings){
-      console.log(savedSettings);
-      this.setState({"autosave": true});
-    }else{
-      localStorage.setItem('bullets', true);
-      this.setState({"autosave": false});
-    }
   }
 
   getRegExp() {
@@ -92,6 +93,36 @@ export default class BulletTime extends React.Component {
     this.setState({acronymRegExp: new RegExp(regexp_def, "gi")});
   }
 
+  saveState() {
+    if(this.state.autosave){
+      localStorage.setItem("guide", this.state.guide);
+      localStorage.setItem("autosave", true);
+      const bullets = this.state.editorState.getCurrentContent().getPlainText();
+      localStorage.setItem("bullets", JSON.stringify(bullets));
+    }else{
+      localStorage.clear();
+    }
+  }
+
+  handleAutosave() {
+    const autosave = this.state.autosave;
+    this.setState({autosave: !autosave}, this.saveState);
+  };
+
+  handleEditorChange(editorState, cb=null) {
+    this.setState({editorState}, cb);
+    this.saveState();
+  };
+
+  handleWidthChange(bulletWidths) {
+    this.setState({bulletWidths});
+  };
+
+  handleGuideChange(guide) {
+    this.setState({guide});
+    this.saveState();
+  };
+
   renderComposer() {
     let regexp = this.state.acronymRegExp;
     if (!regexp) return <pre>Loading...</pre>;
@@ -102,17 +133,12 @@ export default class BulletTime extends React.Component {
              editorState={this.state.editorState}
              bulletWidths={this.state.bulletWidths}
              guide={this.state.guide}
+             GUIDE_DEFAULT={this.GUIDE_DEFAULT}
+             handleEditorChange={(arg, cb=null) => this.handleEditorChange(arg, cb)}
+             handleWidthChange={(arg) => this.handleWidthChange(arg)}
+             handleGuideChange={(arg) => this.handleGuideChange(arg)}
            />;
   }
-
-  handleAutosave() {
-    const autosave = this.state.autosave;
-    this.setState({autosave: !autosave});
-  };
-
-  handleEditorChange(editorState, cb=null) {
-    this.setState({editorState}, cb);
-  };
   
   render() {
     return (

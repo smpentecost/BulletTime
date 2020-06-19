@@ -1,6 +1,5 @@
 // 3rd party imports
 import React from 'react';
-import { useRef } from 'react';
 import { ContentBlock,
          ContentState,
          Editor,

@@ -5,15 +5,13 @@ import { List,
          Popover
        } from '@material-ui/core';
 import { useState } from 'react';
-import { ContentBlock,
-         Modifier,
+import { Modifier,
          SelectionState
        } from 'draft-js';
 import { getMenuOptions } from '../logic/Utils.js';
 
 export default function  AcronymDecorator(props) {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [db, setDb] = useState(props.db);
   const open = Boolean(anchorEl);
   
   const handleContextMenu = (event) => {
@@ -64,7 +62,7 @@ export default function  AcronymDecorator(props) {
   const renderMenuOptions = () => {
     const key = props.decoratedText.replace(/\s/g, ' ');
     let itemRenders = [];
-    for (const item of getMenuOptions(db, key)) {
+    for (const item of getMenuOptions(props.db, key)) {
       itemRenders.push(
         <ListItem button
                   key={item}
